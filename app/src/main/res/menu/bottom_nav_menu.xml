@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--Need to add icons-->
+    <item
+        app:actionProviderClass="android.app.MediaRouteActionProvider"
+        android:title="Itinerary"/>
+    <item
+        app:actionProviderClass="android.app.MediaRouteActionProvider"
+        android:title="Map"/>
+    <item
+        app:actionProviderClass="android.app.MediaRouteActionProvider"
+        android:title="Gallery"/>
+    <item
+        app:actionProviderClass="android.app.MediaRouteActionProvider"
+        android:title="Profile"/>
+
+
+</menu>
