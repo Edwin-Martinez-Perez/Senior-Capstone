@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#006abc"
+    android:background="#068ABF"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AddEventFragment">
 
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Add Filter"
         android:layout_marginTop="20dp"
-        android:textColor="#fdb73e"
+        android:textColor="#fea647"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
