@@ -58,13 +58,13 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     //navigation
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.navigation:navigation-fragment-ktx: 2.5.3")
+//    implementation("androidx.room:room-runtime:2.6.1")
+//    implementation("androidx.navigation:navigation-fragment-ktx: 2.5.3")
     //retrofit implementation
-    implementation("com.square.retrofit2:retrofit:2.9.0")
-    implementation("com.square.retrofit2:converter-scalars:2.9.0")
+//    implementation("com.square.retrofit2:retrofit:2.9.0")
+//    implementation("com.square.retrofit2:converter-scalars:2.9.0")
     //room implementation
-    implementation("androidx.room:room-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
-    implementation("io.coil-kt:coil-compose:2.5.0")
+//    implementation("androidx.room:room-ktx:2.4.1")
+//    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
+//    implementation("io.coil-kt:coil-compose:2.5.0")
 }
