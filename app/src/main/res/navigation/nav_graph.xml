@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.example.collectivetrek.WelcomeFragment"
+        android:label="welcome_page"
+        tools:layout="@layout/welcome_page" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.collectivetrek.LoginFragment"
+        android:label="login"
+        tools:layout="@layout/login" >
+        <action
+            android:id="@+id/action_loginFragment_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_loginFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.collectivetrek.RegisterFragment"
+        android:label="register"
+        tools:layout="@layout/register" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/group"
+        android:name="com.example.collectivetrek.Group"
+        android:label="Group" >
+        <action
+            android:id="@+id/action_group_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_group_to_joinGroupFragment"
+            app:destination="@id/joinGroupFragment" />
+        <action
+            android:id="@+id/action_group_to_shareGroupFragment"
+            app:destination="@id/shareGroupFragment" />
+        <action
+            android:id="@+id/action_group_to_createGroup"
+            app:destination="@id/createGroup" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.example.collectivetrek.ResetPasswordFragment"
+        android:label="reset_password"
+        tools:layout="@layout/reset_password" >
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_resetPasswordWithLinkFragment2"
+            app:destination="@id/resetPasswordWithLinkFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordWithLinkFragment2"
+        android:name="com.example.collectivetrek.ResetPasswordWithLinkFragment"
+        android:label="reset_password_with_link"
+        tools:layout="@layout/reset_password_with_link" >
+        <action
+            android:id="@+id/action_resetPasswordWithLinkFragment2_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itineraryFragment"
+        android:name="com.example.collectivetrek.ItineraryFragment"
+        android:label="fragment_itinerary"
+        tools:layout="@layout/fragment_itinerary" >
+        <action
+            android:id="@+id/action_itineraryFragment_to_addEventFragment"
+            app:destination="@id/addEventFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_addFilterFragment"
+            app:destination="@id/addFilterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEventFragment"
+        android:name="com.example.collectivetrek.AddEventFragment"
+        android:label="fragment_add_filter"
+        tools:layout="@layout/fragment_add_filter" >
+        <action
+            android:id="@+id/action_addEventFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFilterFragment"
+        android:name="com.example.collectivetrek.AddFilterFragment"
+        android:label="AddFilterFragment" >
+        <action
+            android:id="@+id/action_addFilterFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinGroupFragment"
+        android:name="com.example.collectivetrek.JoinGroupFragment"
+        android:label="join_group"
+        tools:layout="@layout/join_group" >
+        <action
+            android:id="@+id/action_joinGroupFragment_to_group"
+            app:destination="@id/group" />
+    </fragment>
+    <fragment
+        android:id="@+id/shareGroupFragment"
+        android:name="com.example.collectivetrek.ShareGroupFragment"
+        android:label="share_group"
+        tools:layout="@layout/share_group" >
+        <action
+            android:id="@+id/action_shareGroupFragment_to_group"
+            app:destination="@id/group" />
+    </fragment>
+    <fragment
+        android:id="@+id/createGroup"
+        android:name="com.example.collectivetrek.CreateGroup"
+        android:label="CreateGroup" >
+        <action
+            android:id="@+id/action_createGroup_to_group"
+            app:destination="@id/group" />
+    </fragment>
+
+</navigation>
