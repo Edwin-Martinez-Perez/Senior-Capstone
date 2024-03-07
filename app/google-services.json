@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "772019346782",
+    "firebase_url": "https://collectivtrek-default-rtdb.firebaseio.com",
+    "project_id": "collectivtrek",
+    "storage_bucket": "collectivtrek.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772019346782:android:b03734cb73e3df482d83cf",
+        "android_client_info": {
+          "package_name": "com.example.collectivetrek"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr1NnMWbcYmy5vZDcrtx0fjxV8rmyAvpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

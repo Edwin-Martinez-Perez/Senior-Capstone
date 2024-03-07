@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#068ABF"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AddEventFragment">
+    tools:context=".fragments.AddEventFragment">
 
     <TextView
         android:id="@+id/add_filter_title"
