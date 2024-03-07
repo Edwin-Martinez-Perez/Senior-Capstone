@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.example.collectivetrek.WelcomeFragment"
+        android:name="com.example.collectivetrek.fragments.WelcomeFragment"
         android:label="WelcomeFragment" >
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.collectivetrek.LoginFragment"
+        android:name="com.example.collectivetrek.fragments.LoginFragment"
         android:label="login"
         tools:layout="@layout/login" >
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.collectivetrek.RegisterFragment"
+        android:name="com.example.collectivetrek.fragments.RegisterFragment"
         android:label="register"
         tools:layout="@layout/register" >
         <action
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.example.collectivetrek.ResetPasswordFragment"
+        android:name="com.example.collectivetrek.fragments.ResetPasswordFragment"
         android:label="reset_password"
         tools:layout="@layout/reset_password" >
         <action
@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/resetPasswordWithLinkFragment"
-        android:name="com.example.collectivetrek.ResetPasswordWithLinkFragment"
+        android:name="com.example.collectivetrek.fragments.ResetPasswordWithLinkFragment"
         android:label="reset_password_with_link"
         tools:layout="@layout/reset_password_with_link" >
         <action
@@ -63,7 +63,7 @@
     </fragment>
     <fragment
         android:id="@+id/group"
-        android:name="com.example.collectivetrek.Group"
+        android:name="com.example.collectivetrek.fragments.GroupFragment"
         android:label="Group" >
         <action
             android:id="@+id/action_group_to_joinGroupFragment"
@@ -80,7 +80,7 @@
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
-        android:name="com.example.collectivetrek.JoinGroupFragment"
+        android:name="com.example.collectivetrek.fragments.JoinGroupFragment"
         android:label="join_group"
         tools:layout="@layout/join_group" >
         <action
@@ -89,7 +89,7 @@
     </fragment>
     <fragment
         android:id="@+id/shareGroupFragment"
-        android:name="com.example.collectivetrek.ShareGroupFragment"
+        android:name="com.example.collectivetrek.fragments.ShareGroupFragment"
         android:label="share_group"
         tools:layout="@layout/share_group" >
         <action
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/createGroup"
-        android:name="com.example.collectivetrek.CreateGroup"
+        android:name="com.example.collectivetrek.fragments.CreateGroupFragment"
         android:label="CreateGroup" >
         <action
             android:id="@+id/action_createGroup_to_group"
