@@ -1,10 +1,9 @@
-package com.example.collectivetrek.fragments
+package com.example.collectivetrek
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.collectivetrek.R
 
 class MainActivity : AppCompatActivity() {
 

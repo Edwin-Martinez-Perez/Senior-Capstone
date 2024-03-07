@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "772019346782",
-    "firebase_url": "https://collectivtrek-default-rtdb.firebaseio.com/",
+    "firebase_url": "https://collectivtrek-default-rtdb.firebaseio.com",
     "project_id": "collectivtrek",
     "storage_bucket": "collectivtrek.appspot.com"
   },
