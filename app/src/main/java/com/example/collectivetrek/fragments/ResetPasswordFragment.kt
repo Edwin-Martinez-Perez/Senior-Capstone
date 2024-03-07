@@ -1,10 +1,12 @@
-package com.example.collectivetrek
+package com.example.collectivetrek.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.example.collectivetrek.R
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -26,7 +28,20 @@ class ResetPasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.reset_password, container, false)
+        // Inflate the layout
+        val view = inflater.inflate(R.layout.reset_password, container, false)
+
+        // Set onClickListener for the next button to lead to the reset password with link fragment
+        view.findViewById<View>(R.id.next_button)?.setOnClickListener{
+            findNavController().navigate(R.id.action_resetPasswordFragment_to_resetPasswordWithLinkFragment)
+        }
+
+        // Set onClickListener for the back button to lead to the welcome fragment
+        view.findViewById<View>(R.id.back_button)?.setOnClickListener{
+            findNavController().navigate(R.id.action_resetPasswordFragment_to_welcomeFragment)
+        }
+
+        return view
     }
 
     companion object {

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ECFBFF"
+<layout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".RegisterFragment">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ECFBFF"
+
+        tools:context=".RegisterFragment">
 
     <TextView
         android:id="@+id/collective_trek"
@@ -222,7 +229,7 @@
 
 
     <Button
-        android:id="@+id/addEvent_add_button"
+        android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_marginTop="45dp"
         android:text="REGISTER"
@@ -234,7 +241,7 @@
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/addEvent_cancel_button"
+        android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
@@ -243,6 +250,7 @@
         android:text="BACK"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addEvent_add_button" />
+        app:layout_constraintTop_toBottomOf="@+id/register_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
