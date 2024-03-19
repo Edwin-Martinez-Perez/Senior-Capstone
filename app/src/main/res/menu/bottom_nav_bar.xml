@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- TODO Create icon images and change>-->
+
+    <item
+        android:id="@+id/itinerary_item"
+        android:enabled="true"
+        android:iconTint="#001849"
+        android:icon="@drawable/sample_icon__person"
+        android:title="@string/itinerary"/>
+    <item
+        android:id="@+id/map_item"
+        android:enabled="true"
+        android:iconTint="#001849"
+        android:icon="@drawable/sample_icon__person"
+        android:title="@string/map"/>
+
+    <item
+        android:id="@+id/gallery_item"
+        android:enabled="true"
+        android:iconTint="#001849"
+        android:icon="@drawable/sample_icon__person"
+        android:title="@string/gallery"/>
+
+    <item
+        android:id="@+id/profile_item"
+        android:enabled="true"
+        android:iconTint="#001849"
+        android:icon="@drawable/sample_icon__person"
+        android:title="@string/profile"/>
+
+
+
+
+</menu>
