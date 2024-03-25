@@ -1,11 +1,11 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 
@@ -44,7 +44,7 @@ class ResetPasswordFragment : Fragment() {
         }
 
         // When focus is changed on username edit text
-        view.findViewById<EditText>(R.id.add_username_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
+        view.findViewById<EditText>(R.id.add_email_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 // Save what the user wrote as username
                 username = view.findViewById<EditText>(R.id.add_email_edit_text)?.text.toString()

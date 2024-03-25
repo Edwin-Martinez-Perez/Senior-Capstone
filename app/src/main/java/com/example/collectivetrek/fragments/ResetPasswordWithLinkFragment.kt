@@ -58,11 +58,11 @@ class ResetPasswordWithLinkFragment : Fragment() {
         }
 
         // When focus is changed on new password edit text
-        view.findViewById<EditText>(R.id.new_password_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
+        view.findViewById<EditText>(R.id.password_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 // Save the re-entered password as a variable
                 val reenterPassword =
-                    view.findViewById<EditText>(R.id.new_password_edit_text)?.text.toString()
+                    view.findViewById<EditText>(R.id.re_enter_password_edit_text)?.text.toString()
                 // Check to see if the passwords do not match
                 if (newPassword != reenterPassword) {
                     // Make a toast message to show that the passwords do not match
