@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 
@@ -15,6 +16,9 @@ class ResetPasswordFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    // Create variables
+    private var email: String? = null
+    private var username: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +34,22 @@ class ResetPasswordFragment : Fragment() {
     ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.reset_password, container, false)
+
+        // When focus is changed on email edit text
+        view.findViewById<EditText>(R.id.add_email_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                // Save what the user wrote as email
+                email = view.findViewById<EditText>(R.id.add_email_edit_text)?.text.toString()
+            }
+        }
+
+        // When focus is changed on username edit text
+        view.findViewById<EditText>(R.id.add_username_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                // Save what the user wrote as username
+                username = view.findViewById<EditText>(R.id.add_email_edit_text)?.text.toString()
+            }
+        }
 
         // Set onClickListener for the next button to lead to the reset password with link fragment
         view.findViewById<View>(R.id.next_button)?.setOnClickListener{
