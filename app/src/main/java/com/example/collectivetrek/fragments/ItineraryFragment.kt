@@ -14,6 +14,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapterCallback
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapter
 import com.example.collectivetrek.EventItineraryListener
 import com.example.collectivetrek.ItineraryViewModel
@@ -45,10 +48,10 @@ filterを消すときに、もしeventがそのfilterにあったら、ほんと
 //TODO when user open the itinerary for the first time (with the specific group id, show the first page),
 class ItineraryFragment : Fragment(), EventAdapterCallback {
 
+class ItineraryFragment : Fragment() {
+
     private var _binding: FragmentItineraryBinding? = null
     private val binding get() = _binding!!
-
-
     // private val itineraryViewModel: ItineraryViewModel by activityViewModels()
 
     private val itineraryViewModel: ItineraryViewModel by activityViewModels {
@@ -66,7 +69,10 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
         binding?.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = itineraryViewModel
+
             itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
+
+            itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext())
             eventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
         return binding.root
@@ -156,9 +162,48 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
                 }
             }
         }
+        val eventAdapter = EventAdapter(EventItineraryListener { event ->
+            itineraryViewModel.setEvent(event)
+            Log.d("DictionaryHome word obj","filter")
+        })
+
+//        binding?.dictionaryHomeFragment = this
+//        val adapter = DictionaryHomeAdapter(DictionaryHomeListener { word ->
+//            sharedViewModel.setWord(word)
+//            Log.d("DictionaryHome word obj",word.imageFileName.toString())
+//            //navigate to definition
+//            findNavController().navigate(R.id.action_dictionaryHomeFragment_to_wordDefinitionFragment)
+//        })
+//        binding.recyclerView.adapter = adapter
+
+        val filterAdapter = FilterAdapter(FilterItineraryListener { filter ->
+            itineraryViewModel.setFilter(filter)
+            Log.d("DictionaryHome word obj","filter")
+            // TODO
+            // when filter clicked, show the events with that filter
+        })
+
+        binding.itineraryFilterRecycler.adapter = filterAdapter
+        binding.eventsRecyclerView.adapter = eventAdapter
+
+        // TODO 1 when user created the group with dates for the first time, create filters based on the dates
+        // check db if theres any event, filter, if not,
+        // show the sample event in all and each filter
+
+        // show list of all events
+        itineraryViewModel.allEvents.observe(viewLifecycleOwner) { events ->
+            // Update the cached copy of the words in the adapter.
+            Log.d("Tag", "Number of events: ${events.size}")
+            events.let { eventAdapter.submitList(it) }
+        }
 
 
 
+        // show list of filtered events
+        itineraryViewModel.filteres.observe(viewLifecycleOwner) { filters ->
+            Log.d("Tag", "Number of events: ${filters.size}")
+            filters.let { filterAdapter.submitList(it) }
+        }
         //buttons
         binding.addEventButton.setOnClickListener {
             // go to add event fragment

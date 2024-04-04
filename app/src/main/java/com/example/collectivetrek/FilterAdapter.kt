@@ -1,6 +1,6 @@
 package com.example.collectivetrek
 
-import android.util.Log
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -44,10 +44,7 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 //                binding.filterCard.setBackgroundResource(R.drawable.itinerary_filter_clicked)
 //                Log.d("Adapter","in clicklistner")
             }
-
-
         }
-
     }
 
     class EventsComparator : DiffUtil.ItemCallback<Filter>() {
@@ -64,3 +61,4 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 class FilterItineraryListener(val clickListener: (filter: Filter) -> Unit) {
     fun onClick(filter: Filter) = clickListener(filter)
 }
+

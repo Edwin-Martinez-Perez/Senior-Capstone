@@ -18,6 +18,13 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : EventItineraryViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
 
+class EventAdapter(val clickListener: EventItineraryListener) :
+    ListAdapter<Event, EventAdapter.EventItineraryViewHolder>(EventsComparator()){
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : EventItineraryViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        //return WordViewHolder(view)
+
         return EventItineraryViewHolder(
             ItineraryEventItemBinding.inflate(layoutInflater, parent, false)
         )
@@ -30,7 +37,6 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
             Log.d("addressText",holder.binding.addressText.text.toString())
             callback.onAddressClick(holder.binding.addressText.text.toString())
         }
-
     }
 
 
@@ -45,6 +51,7 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
             binding.eventData = event
             //binding.addressText.text = Html.fromHtml("<u>${event.address}</u>")
             binding.addressText.paintFlags = binding.addressText.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
             binding.clickListener = clickListener
             binding.executePendingBindings()
             binding.root.setOnClickListener {
@@ -53,8 +60,6 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
         }
 
     }
-
-
     class EventsComparator : DiffUtil.ItemCallback<Event>() {
         override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean {
             return oldItem === newItem
@@ -65,6 +70,7 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
         }
     }
 
+
 }
 
 class EventItineraryListener(val clickListener: (event: Event) -> Unit) {
@@ -72,5 +78,8 @@ class EventItineraryListener(val clickListener: (event: Event) -> Unit) {
     fun onClick(event: Event) {
         clickListener(event)
     }
+}
 
+class EventItineraryListener(val clickListener: (event: Event) -> Unit) {
+    fun onClick(event: Event) = clickListener(event)
 }

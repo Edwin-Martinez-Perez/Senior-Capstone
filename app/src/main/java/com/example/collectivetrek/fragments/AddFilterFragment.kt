@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Filter
 import com.example.collectivetrek.databinding.FragmentAddFilterBinding
@@ -21,11 +22,10 @@ import com.example.collectivetrek.databinding.FragmentAddFilterBinding
 class AddFilterFragment : Fragment() {
     private var _binding: FragmentAddFilterBinding? = null
     private val binding get() = _binding!!
-
     private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
-
+    private val itineraryViewModel: ItineraryViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -52,6 +52,7 @@ class AddFilterFragment : Fragment() {
             Log.d("add filter fragment",filterName)
             if (checkFilterName(filterName)) {
                 // store in database
+
                 val filter = Filter(name=filterName)
                 addFilterToDatabase(filter)
                 itineraryViewModel.filterInsertionResult.observe(viewLifecycleOwner){ result ->
@@ -69,6 +70,11 @@ class AddFilterFragment : Fragment() {
 //                // go back to itinerary page
 //
 //                navController.popBackStack()
+                addFilterToDatabase(Filter(name=filterName))
+                // make Toast
+                Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+                // go back to itinerary page
+                navController.popBackStack()
             }
         }
 

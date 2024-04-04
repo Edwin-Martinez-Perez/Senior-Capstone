@@ -21,7 +21,6 @@
         android:layout_marginHorizontal="3dp"
         android:orientation="horizontal"
         app:cardCornerRadius="10dp">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/filter_card"
             android:layout_width="wrap_content"
@@ -29,7 +28,6 @@
             android:paddingVertical="8dp"
             android:orientation="horizontal"
             android:background="@drawable/itinerary_filter">
-
             <TextView
                 android:id="@+id/filter_text"
                 android:layout_width="wrap_content"
@@ -44,14 +42,11 @@
                 android:text="@{filterData.name}"
                 android:textColor="#001849"
                 tools:text="fiilter name"
+                tools:text="Filter Name"
+                android:textColor="#001849"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
-
 </layout>
