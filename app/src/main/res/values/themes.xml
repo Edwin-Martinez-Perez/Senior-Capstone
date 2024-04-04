@@ -11,4 +11,10 @@
         <item name="colorPrimary">#d7e2ff</item>
         <item name="colorOnPrimary">#001a40</item>
     </style>
+
+    <style name="customFAB">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+
+    </style>
 </resources>

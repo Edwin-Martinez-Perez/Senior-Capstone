@@ -14,7 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
+import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.databinding.FragmentAddEventBinding
@@ -27,7 +29,9 @@ class AddEventFragment : Fragment() {
     private var _binding: FragmentAddEventBinding? = null
     private val binding get() = _binding!!
 
-    private val itineraryViewModel: ItineraryViewModel by activityViewModels()
+    private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
+        ItineraryViewModelFactory(repository = ItineraryRepository())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,19 +72,25 @@ class AddEventFragment : Fragment() {
             val note = binding.addEventNoteEditText.editText?.text.toString()
 
 
-            Log.d("add event date", date)
-
             val event = Event(placeName,address=address, date = date, note = note)
 
             // validation
             if (checkEventFields(event)){
                 // store in database
                 addEventToDataBase(event)
-                // make Toast
-                Toast.makeText(context, "Event added.", Toast.LENGTH_LONG).show()
-                // go back to itinerary page
-                Log.d("add filter","add clicked")
-                navController.popBackStack()
+
+                itineraryViewModel.dataInsertionResult.observe(viewLifecycleOwner){ result ->
+                    if (result){
+                        // make Toast
+                        Toast.makeText(context, "Event added.", Toast.LENGTH_LONG).show()
+                        Log.d("add event fragment",itineraryViewModel.filter.value?.id.toString())
+                        // go back to itinerary page
+                        navController.popBackStack()
+                    }
+                    else{
+                        Toast.makeText(context, "Failed.", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
 
@@ -112,7 +122,7 @@ class AddEventFragment : Fragment() {
 
 
         if (event.date!!.isNotEmpty()) {
-             if (event.date!!.length != 10 || event.date!!.length != 9) {
+             if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
                 binding.addEventDateTextInput.error = "Invalid date length."
                 return false
              }
@@ -129,6 +139,7 @@ class AddEventFragment : Fragment() {
     }
 
     private fun addEventToDataBase(event:Event) {
+        Log.d("Add event to database", "called")
         itineraryViewModel.insertEvent(event)
     }
 
@@ -165,9 +176,6 @@ class AddEventFragment : Fragment() {
     // TODO change theme
     private fun showDate2() {
         val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
 
         // Set up the MaterialDatePicker
         val builder = MaterialDatePicker.Builder.datePicker()
