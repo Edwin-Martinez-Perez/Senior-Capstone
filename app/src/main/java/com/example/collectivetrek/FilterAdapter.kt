@@ -1,5 +1,6 @@
 package com.example.collectivetrek
 
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -14,7 +15,6 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : FilterItineraryViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        //return WordViewHolder(view)
 
         return FilterItineraryViewHolder(
             ItineraryEventFilterBinding.inflate(layoutInflater, parent, false)
@@ -39,10 +39,12 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 clickListener.onClick(filter)
+//                // TODO when the app opened, first filter should be selected
+//                // TODO when other filter is clicked, previous filtere should change colors
+//                binding.filterCard.setBackgroundResource(R.drawable.itinerary_filter_clicked)
+//                Log.d("Adapter","in clicklistner")
             }
-
         }
-
     }
 
     class EventsComparator : DiffUtil.ItemCallback<Filter>() {
@@ -59,3 +61,4 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 class FilterItineraryListener(val clickListener: (filter: Filter) -> Unit) {
     fun onClick(filter: Filter) = clickListener(filter)
 }
+

@@ -19,31 +19,34 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
         android:layout_marginHorizontal="3dp"
+        android:orientation="horizontal"
         app:cardCornerRadius="10dp">
-
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/filter_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingVertical="8dp"
+            android:orientation="horizontal"
             android:background="@drawable/itinerary_filter">
-
-            <!-- TODO text (filter name) can change by <data><variabke>-->
             <TextView
                 android:id="@+id/filter_text"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxHeight="20dp"
+                android:minHeight="20dp"
+                android:minWidth="60dp"
+                android:maxWidth="100dp"
+                android:layout_marginHorizontal="5dp"
                 android:textSize="12dp"
                 android:gravity="center"
+                android:text="@{filterData.name}"
+                android:textColor="#001849"
+                tools:text="fiilter name"
                 tools:text="Filter Name"
                 android:textColor="#001849"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
-
 </layout>
