@@ -1,9 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.CollectiveTrek" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Base.Theme.CollectiveTrek" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
     <style name="Theme.CollectiveTrek" parent="Base.Theme.CollectiveTrek" />
+
+    <style name="Theme.App.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">#d7e2ff</item>
+        <item name="colorOnPrimary">#001a40</item>
+    </style>
+    <style name="customFAB">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+
+    </style>
 </resources>

@@ -1,33 +1,27 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.collectivetrek.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.NavHostFragment
+import com.example.collectivetrek.ItineraryRepository
+import com.example.collectivetrek.ItineraryViewModel
+import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.database.Filter
+import com.example.collectivetrek.databinding.FragmentAddFilterBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddFilterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddFilterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentAddFilterBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
+        ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
     override fun onCreateView(
@@ -35,26 +29,72 @@ class AddFilterFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_filter, container, false)
+        _binding = FragmentAddFilterBinding.inflate(inflater, container, false) //? attachToRoot false
+
+        binding?.apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = itineraryViewModel
+        }
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddFilterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddFilterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val navController = NavHostFragment.findNavController(this@AddFilterFragment)
+
+
+        binding.addFilterAddButton.setOnClickListener {
+            // retrieve filter from edit text and validate
+            val filterName = binding.addFilterFilterEditText.editText?.text.toString()
+            Log.d("add filter fragment",filterName)
+            if (checkFilterName(filterName)) {
+                // store in database
+                val filter = Filter(name=filterName)
+                addFilterToDatabase(filter)
+                itineraryViewModel.filterInsertionResult.observe(viewLifecycleOwner){ result ->
+                    if (result){
+                        // make Toast
+                        Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+                        itineraryViewModel.setFilter(filter)
+                        Log.d("add filter fragment", itineraryViewModel.filter.value.toString())
+                        // go back to itinerary page
+                        navController.popBackStack()
+                    }
                 }
+//                // make Toast
+//                Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+//                // go back to itinerary page
+//
+//                navController.popBackStack()
             }
+        }
+
+        binding.addFilterCancelButton.setOnClickListener {
+            // go back to itinerary page
+            navController.popBackStack()
+        }
+    }
+
+    private fun addFilterToDatabase(filter: Filter) {
+        //add typed filter shown (saved in LiveData (and object?)) to the database
+        itineraryViewModel.insertFilter(filter)
+    }
+
+    private fun checkFilterName(name: String) : Boolean {
+        if (name.isEmpty()) {
+            binding.addFilterFilterEditText.error = "Enter a filter name."
+            return false
+        }
+        else if (name.length > 20) {
+            binding.addFilterFilterEditText.error = "Filter name is too long."
+            return false
+        }
+        return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

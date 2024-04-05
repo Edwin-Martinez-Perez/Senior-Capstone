@@ -132,4 +132,10 @@
             android:id="@+id/action_addEventFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/photoUploadFragment"
+        android:name="com.example.collectivetrek.fragments.PhotoUploadFragment"
+        android:label="photo_upload"
+        tools:layout="@layout/photo_upload" />
+
 </navigation>
