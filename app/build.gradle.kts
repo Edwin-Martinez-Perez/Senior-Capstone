@@ -37,11 +37,17 @@ android {
 
     buildFeatures {
         dataBinding = true
+        //material3 test
+        //compose = true
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        //material3 test
+        //kotlinCompilerExtensionVersion = "1.1.1"
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -49,10 +55,15 @@ android {
 }
 
 dependencies {
-
+    //changed to use compose compiler
+//    implementation("androidx.core:core-ktx:1.7.20")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+
+    // for bottom navigation
+    implementation ("com.google.android.material:material:1.5.0")
+    //implementation("com.google.android.material:material:1.11.0")
+
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")

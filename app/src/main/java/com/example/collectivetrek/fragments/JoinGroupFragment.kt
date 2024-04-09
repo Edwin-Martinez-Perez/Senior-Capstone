@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 
@@ -15,6 +16,8 @@ class JoinGroupFragment : Fragment() {
 
     private var param1: String? = null
     private var param2: String? = null
+    // Create variables
+    private var group_code: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,14 @@ class JoinGroupFragment : Fragment() {
     ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.join_group, container, false)
+
+        // When focus is changed on code edit text
+        view.findViewById<EditText>(R.id.add_code_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                // Save what the user wrote as group_code
+               group_code = view.findViewById<EditText>(R.id.add_code_edit_text)?.text.toString()
+            }
+        }
 
         // Set onClickListener for the join button to lead to the group fragment
         view.findViewById<View>(R.id.join_button)?.setOnClickListener{

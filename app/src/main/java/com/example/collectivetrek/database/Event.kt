@@ -5,7 +5,8 @@ data class Event(
     val date: String? = null,
     val pinNum: Int? = null,
     val coordinates: String? = null,
-    val address: String? = null
+    val address: String? = null,
+    val note: String? = null
 )
 
 /*
