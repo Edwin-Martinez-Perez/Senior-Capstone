@@ -21,29 +21,30 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         bottomNav = findViewById(R.id.bottom_navigation)
-        bottomNav.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.welcomeFragment -> {
-                    navController.navigate(R.id.welcomeFragment)
+
+        // Set the initial selected item
+        bottomNav.selectedItemId = R.id.welcomeFragment
+
+        // Set up the item selected listener
+        bottomNav.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.profileFragment -> {
+                    navController.navigate(R.id.profileFragment)
                     true
                 }
-                R.id.resetPasswordFragment -> {
-                    navController.navigate(R.id.resetPasswordFragment)
+
+                R.id.galleryFragment -> {
+                    navController.navigate(R.id.photoUploadFragment)
                     true
                 }
-                R.id.registerFragment -> {
-                    navController.navigate(R.id.registerFragment)
+
+                R.id.mapFragment -> {
+                    navController.navigate(R.id.mapFragment)
                     true
                 }
+
                 else -> false
             }
         }
-
-        // Navigate to the start destination when the app starts
-        navController.navigate(R.id.welcomeFragment)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

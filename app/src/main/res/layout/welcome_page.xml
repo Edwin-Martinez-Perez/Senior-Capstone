@@ -11,22 +11,19 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ECFBFF"
-
         tools:context=".WelcomeFragment">
 
-        <TextView
-            android:id="@+id/collective_trek"
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:fontFamily="@font/allerta"
-            android:text="CollectiveTrek"
-            android:textColor="#00AAD8"
-            android:textSize="45dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/logo_transparent_png"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/center_guideline"
@@ -37,42 +34,29 @@
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="115dp"
+            android:layout_width="300dp"
+            android:layout_marginBottom="25dp"
             android:text="LOGIN"
             android:textSize="25dp"
-            android:backgroundTint="#00AAD8"
+            android:backgroundTint="#1F4C67"
             android:fontFamily="@font/allerta"
-            app:layout_constraintTop_toBottomOf="@id/collective_trek"
+            app:layout_constraintBottom_toTopOf="@id/register_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/register_button"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:text="REGISTER"
-            android:textSize="25dp"
-            android:backgroundTint="#00AAD8"
+            android:textSize="25sp"
+            android:backgroundTint="#1F4C67"
             android:fontFamily="@font/allerta"
-            app:layout_constraintTop_toBottomOf="@id/login_button"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"/>
-
-        <Button
-            android:id="@+id/forgot_password_button"
-            android:layout_width="wrap_content"
-            android:text="FORGOT PASSWORD?"
-            android:textSize="25dp"
-            android:backgroundTint="#00AAD8"
-            android:fontFamily="@font/allerta"
-            app:layout_constraintTop_toBottomOf="@id/register_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="45dp"/>
+            android:layout_marginBottom="50dp" />/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

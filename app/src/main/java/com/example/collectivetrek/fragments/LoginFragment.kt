@@ -12,11 +12,9 @@ import com.example.collectivetrek.R
 import com.example.collectivetrek.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class LoginFragment : Fragment() {
 
+    // Create variables
     private lateinit var binding: LoginBinding
     private lateinit var auth: FirebaseAuth
 
@@ -30,19 +28,23 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        // Get Firebase instance
         auth = FirebaseAuth.getInstance()
-
+        binding.forgotPasswordTextView.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_resetPasswordFragment)
+        }
+        // When login button is pushed, go to login function
         binding.loginButton.setOnClickListener {
             logIn()
         }
-
+        // When back button is pushed, go to welcome fragment
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_welcomeFragment)
         }
     }
 
     private fun logIn(){
+        // Get variables
         val emailTextInput = binding.emailEditText
         val passwordTextInput = binding.passwordEditText
 
@@ -52,6 +54,7 @@ class LoginFragment : Fragment() {
         val email = emailEditText?.text.toString()
         val password = passwordEditText?.text.toString()
 
+        // If any field is blank, send a toast message
         if (email.isBlank() || password.isBlank()) {
             Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
