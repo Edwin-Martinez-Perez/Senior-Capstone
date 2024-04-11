@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -23,26 +22,29 @@ class MainActivity : AppCompatActivity() {
         bottomNav = findViewById(R.id.bottom_navigation)
 
         // Set the initial selected item
-        bottomNav.selectedItemId = R.id.welcomeFragment
+        bottomNav.selectedItemId = R.id.itineraryFragment
 
         // Set up the item selected listener
         bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.profileFragment -> {
+                R.id.itinerary_item -> {
+                    navController.navigate(R.id.itineraryFragment)
+                    true
+                }
+                R.id.profile_item -> {
                     navController.navigate(R.id.profileFragment)
                     true
                 }
 
-                R.id.galleryFragment -> {
+                R.id.gallery_item -> {
                     navController.navigate(R.id.photoUploadFragment)
                     true
                 }
 
-                R.id.mapFragment -> {
+                R.id.map_item -> {
                     navController.navigate(R.id.mapFragment)
                     true
                 }
-
                 else -> false
             }
         }

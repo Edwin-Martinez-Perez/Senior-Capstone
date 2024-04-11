@@ -29,7 +29,4 @@
         android:icon="@drawable/sample_icon__person"
         android:title="@string/profile"/>
 
-
-
-
 </menu>
