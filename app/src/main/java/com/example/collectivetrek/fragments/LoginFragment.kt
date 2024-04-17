@@ -64,7 +64,7 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-                    findNavController().navigate(R.id.action_loginFragment_to_group)
+                    findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
