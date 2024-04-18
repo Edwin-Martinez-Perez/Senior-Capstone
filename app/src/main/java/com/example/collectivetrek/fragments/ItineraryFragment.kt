@@ -1,6 +1,10 @@
 package com.example.collectivetrek.fragments
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.app.AlertDialog
+import android.app.ProgressDialog.show
+import android.content.DialogInterface
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
@@ -9,12 +13,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
+import androidx.compose.ui.input.key.Key.Companion.I
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapterCallback
 import com.example.collectivetrek.EventAdapter
+import com.example.collectivetrek.EventAdapterDeleteCallback
 import com.example.collectivetrek.EventItineraryListener
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.R
@@ -25,30 +33,46 @@ import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import java.util.Calendar
+import java.util.Date
 
 /*
-‼️クリック時フィルターの色を変える
-イベントの数字をなくしてそのかわりドットを入れる
-‼️Googleマップに飛ぶときに、パーミッションを取る
-itineraryが空の時に画像を追加する
-Toastのデザインを変える
+‼️クリック時フィルターの色を変える (別のフィルターがクリックされたらそのフィルターを戻す)
+‼️Googleマップに飛ぶときに、パーミッションを取る (https://www.geeksforgeeks.org/how-to-get-current-location-in-android/)
 fabの形を変える (Theme)
-‼️eventがclickされた時、eventの中身を編集できるようにする。date address, event name, note
-‼️eventが編集された時、databaseを書き換える
-‼️書き換えられたeventを表示する
+‼️datepickerの、dateを4/31とかないものを表示しないようにする
 filterを消すボタンを作る(filterをaddするボタンの代わりに、編集ボタンを作って、addとdeleteができるようにする)
 filterを消すときに、もしeventがそのfilterにあったら、ほんとに消していいか聞く
+‼️一番最初のデフォルトフィルターを作る！！
+eventsがない時のイラストを変える(サイズ、テキストも追加する)
+(Friday)add eventのaddressを入力するときに、検索候補を表示する
+(Friday)safe args 送れるようにする
+‼️delete menuを作る
+‼️‼️x y の値を変える bitmap
+☑️event cardviewのマックスサイズを指定する
+☑️event cardview: 画像をラウンド&&正方形にする、マージンをたす、noteとaddressの隙間をなくす
+☑️event cardview: サイズを内容に合わせて変える
+☑️画像をイベントに追加する
+☑️eventをスクローラブルにする
+☑️(Friday)フィルターがクリックされた時&アプリ起動時に、eventsがロードしない時がある。callbackがfalseを返す。それを直す。
+☑️Toastのデザインを変える
  */
 
 //TODO initializer
 //TODO when user open the itinerary for the first time (with the specific group id, show the first page),
-class ItineraryFragment : Fragment(), EventAdapterCallback {
+class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCallback {
 
     private var _binding: FragmentItineraryBinding? = null
     private val binding get() = _binding!!
 
-
+    private val preciseLoc = ACCESS_COARSE_LOCATION
+    private val approxLoc = ACCESS_FINE_LOCATION
+    private val permissions = listOf(
+        preciseLoc, approxLoc
+    )
     // private val itineraryViewModel: ItineraryViewModel by activityViewModels()
 
     private val itineraryViewModel: ItineraryViewModel by activityViewModels {
@@ -76,16 +100,19 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
         super.onViewCreated(view, savedInstanceState)
         binding?.itineraryFragment = this
 
+        Log.d("filter id", itineraryViewModel.filter.value?.id.toString())
+
         val eventAdapter = EventAdapter(EventItineraryListener { event ->
             itineraryViewModel.setEvent(event)
 
             // TODO get event id somehow
-            val eventId = "event.id"
+            val eventId = event.eventId!!
+            //val eventId = "-NuUsqrTkBUKVui5XSmg"
 
             //TODO makes a event editable
             showEditEventDialog(eventId)
             Log.d("DictionaryHome word obj","filter")
-        },this)
+        },this, this)
         binding.eventsRecyclerView.adapter = eventAdapter
 
         val filterAdapter = FilterAdapter(FilterItineraryListener { filter ->
@@ -96,16 +123,18 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
             Log.d("Filter",itineraryViewModel.filter.value?.id.toString())
             itineraryViewModel.setFilteredEvents()
 
+            //change the filter name
+            binding.filterName.setText(filter.name)
+
             itineraryViewModel.filteredEvents.observe(viewLifecycleOwner) { events ->
                 if (events.isEmpty()){
-                    // TODO Change to put illustration on the screen and say "create an event!" or something
-                    val event = Event(placeName = "Sample Place")
-                    val placeHolderEvent = mutableListOf<Event>()
-                    placeHolderEvent.add(event)
-
-                    placeHolderEvent.let { eventAdapter.submitList(it) }
+                    // TODO Change illustration on the screen and say "create an event!" or something
+                    // Show image when there is no event available under the filter
+                    binding.itineraryImage.visibility = View.VISIBLE
                     Log.d("Tag", "event is empty")
                 } else {
+                    // Remove image when there is an event available under the filter
+                    binding.itineraryImage.visibility = View.GONE
                     Log.d("Tag", "Number of events: ${events.size}")
                     events.let { eventAdapter.submitList(it) }
                 }
@@ -117,8 +146,9 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
 
 
 
-        itineraryViewModel.setFilters(groupId = "ABCDEFID1") //TODO change to groupid
+        //itineraryViewModel.setFilters(groupId = "ABCDEFID1") //TODO change to groupid
         //itineraryViewModel.setFilters(groupId = "ABCDEFID2") //TODO change to groupid
+        itineraryViewModel.setFilters(groupId = "ABCDEFID3") //TODO change to groupid
 
         // show list of filtered events
         itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
@@ -127,11 +157,13 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
             if (filters.isEmpty()){
                 // TODO create filter each for each date
                 // TODO 1 when user created the group with dates for the first time, create filters based on the dates
-                val filter = Filter(name = "Sample")
+                val filter = Filter(name = "Add Filter")
                 val placeHolderFilter = mutableListOf<Filter>()
                 placeHolderFilter.add(filter)
 
                 placeHolderFilter.let { filterAdapter.submitList(it) }
+
+                binding.itineraryImage.visibility = View.VISIBLE
 
             } else {
                 filters.let { filterAdapter.submitList(it) }
@@ -142,18 +174,47 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
             if (result){
                 // filter shown success
                 Log.d("callback","filter shown success")
-                if (itineraryViewModel.filter.value?.id.isNullOrEmpty()){
+                Log.d("filtered events null",(itineraryViewModel.filteredEvents.value.isNullOrEmpty()).toString())
+                if (itineraryViewModel.filter.value?.id.isNullOrEmpty() && itineraryViewModel.filters.value!!.isNotEmpty()){ //TODO check this condition
                     // show the events in the first filter when there is no filter selected
                     itineraryViewModel.setFilter(itineraryViewModel.filters.value!![0])
+                    binding.filterName.setText(itineraryViewModel.filters.value!![0].name)
+                }else{
+                    binding.filterName.setText(itineraryViewModel.filter.value!!.name)
                 }
                 itineraryViewModel.setFilteredEvents()
 
+                //make FAB visible since filter is available
+                binding.addEventButton.visibility = View.VISIBLE
+
                 itineraryViewModel.filteredEventsShownResult.observe(viewLifecycleOwner){result->
                     if(result){
-                        Log.d("under call back", itineraryViewModel.filteredEvents.value.toString())
+                        Log.d("result",result.toString())
+
+                        if (!itineraryViewModel.filteredEvents.value.isNullOrEmpty()){
+                            // show background image when there is no events under the filter
+                            binding.itineraryImage.visibility = View.GONE
+                        }
                         itineraryViewModel.filteredEvents.value.let { eventAdapter.submitList(it) }
+                    } else{
+                        Log.d("result false", result.toString())
+                        if (!itineraryViewModel.filters.value.isNullOrEmpty() && itineraryViewModel.filters.value!!.isNotEmpty()){
+                            // show fab when filter is shown
+                            //Log.d("filters show FAB",itineraryViewModel.filters.value.toString())
+                            binding.addEventButton.visibility = View.VISIBLE
+                        }
+                        if (itineraryViewModel.filteredEvents.value.isNullOrEmpty()){
+                            // show background image when there is no events under the filter
+                            Log.d("filtered events",itineraryViewModel.filteredEvents.value.toString())
+                            binding.itineraryImage.visibility = View.VISIBLE
+                        }
                     }
                 }
+            } else{//filter is empty (no filter is added)
+                //
+                Log.d("filter result false", result.toString())
+                binding.itineraryImage.visibility = View.VISIBLE
+                binding.addEventButton.visibility = View.GONE
             }
         }
 
@@ -161,8 +222,14 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
 
         //buttons
         binding.addEventButton.setOnClickListener {
-            // go to add event fragment
-            findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
+             //go to add event fragment
+            //findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
+
+            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment("ABCDEFID1")
+
+
+//            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = "ABCDEFID1")
+            findNavController().navigate(action)
         }
 
         binding.addFilterButton.setOnClickListener {
@@ -198,23 +265,44 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
 //        startActivity(mapIntent)
     }
 
-    fun showEditEventDialog(eventId: String){
 
+
+    private fun showEditEventDialog(eventId: String){
         val builder = AlertDialog.Builder(requireContext())
         val inflater = layoutInflater
         val dialogLayout = inflater.inflate(R.layout.edit_event_dialog, null)
         val place = dialogLayout.findViewById<TextInputLayout>(R.id.editEvent_place_editText)
         val address = dialogLayout.findViewById<TextInputLayout>(R.id.editEvent_address_editText)
-        val date = dialogLayout.findViewById<TextInputLayout>(R.id.editEvent_date_TextInput)
+        val dateLayout = dialogLayout.findViewById<TextInputLayout>(R.id.editEvent_date_TextInput)
+        val dateEditText = dialogLayout.findViewById<TextInputEditText>(R.id.editEvent_date_EditText)
+        val note = dialogLayout.findViewById<TextInputLayout>(R.id.editEvent_note_editText)
+
+        place.editText?.setText(itineraryViewModel.event.value?.placeName.toString())
+        address.editText?.setText(itineraryViewModel.event.value?.address.toString())
+        dateLayout.editText?.setText(itineraryViewModel.event.value?.date.toString())
+        note.editText?.setText(itineraryViewModel.event.value?.note.toString())
+
+        dateEditText.setOnClickListener{
+            Log.d("date clicked","showdate")
+            showDate(dateLayout)
+        }
 
         with(builder){
             setPositiveButton("Done"){ dialog, which ->
                 //TODO modify database
-                Log.d("dialog",place.editText?.text.toString())
-                Log.d("dialog",address.editText?.text.toString())
-                Log.d("dialog",date.editText?.text.toString())
-                //itineraryViewModel.modifyEvent(eventId,Event(address = address.editText?.text.toString(),
-                    //placeName = place.editText?.text.toString(), date = date.editText?.text.toString()))
+                val newEvent = Event(
+                    placeName = place.editText?.text.toString(),
+                    address = address.editText?.text.toString(),
+                    date = dateLayout.editText?.text.toString(),
+                    note = note.editText?.text.toString(),
+                    bitmap = itineraryViewModel.event.value?.bitmap)
+                itineraryViewModel.modifyEvent(eventId, newEvent)
+                itineraryViewModel.eventModificationResult.observe(viewLifecycleOwner){result->
+                    if(result){
+                        Log.d("modification done", itineraryViewModel.event.toString())
+                        Toast.makeText(context, "Event saved.", Toast.LENGTH_LONG).show()
+                    }
+                }
 
                 // TODO show the updated events
                 itineraryViewModel.setFilteredEvents()
@@ -231,6 +319,44 @@ class ItineraryFragment : Fragment(), EventAdapterCallback {
         // When address textview clicked, execute openMap
         Log.d("onAddressClick",address)
         openMap(address)
+    }
+
+    override fun onDeleteEventClick(clickedEvent:Event){
+        Log.d("onDeleteClick", clickedEvent.placeName.toString())
+        //TODO delete event from database
+        itineraryViewModel.deleteEvent(clickedEvent)
+
+        //TODO reload the events after making sure the item is deleted
+        itineraryViewModel.setFilteredEvents()
+    }
+
+    private fun showDate(date: TextInputLayout) {
+        Log.d("showData executed","showdate")
+        // Set up the MaterialDatePicker
+        val builder = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select Date")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setTheme(R.style.Theme_App_DatePicker)
+
+        // Create the MaterialDatePicker
+        val materialDatePicker = builder.build()
+
+        // Add a listener to handle date selection
+        materialDatePicker.addOnPositiveButtonClickListener { selection ->
+            val selectedDate = Date(selection)
+            val calendar = Calendar.getInstance()
+            calendar.time = selectedDate
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1
+            val day = calendar.get(Calendar.DAY_OF_MONTH) + 1
+
+            val formattedDate = "$month/$day/$year"
+            date.editText?.setText(formattedDate)
+        }
+
+        // Show the MaterialDatePicker
+        materialDatePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
+        // TODO change the color of positive and negative button
     }
 
     override fun onDestroyView() {

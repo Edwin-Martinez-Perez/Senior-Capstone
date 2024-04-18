@@ -21,8 +21,9 @@ import kotlinx.coroutines.launch
 class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel() {
     // TODO
     // get group id from the group page before coming to itinerary page
+    val groupid = "ABCDEFID3"
     //val groupid = "ABCDEFID2"
-    val groupid = "ABCDEFID1"
+    //val groupid = "ABCDEFID1"
 
 
     private val _event = MutableLiveData<Event>()
@@ -30,12 +31,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     private val _filter = MutableLiveData<Filter>()
     val filter: LiveData<Filter> = _filter
-
-//    private val _filterId = MutableLiveData<String>()
-//    val filterId: LiveData<String> = _filterId
-
-//    private val _filterId = setFilterID()
-//    val filterId: String = _filterId
 
     //live data for events
     //retrieve all the events from the group that user is currently in
@@ -71,6 +66,9 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     private val _filteredEventsShownResult = MutableLiveData<Boolean>()
     val filteredEventsShownResult: LiveData<Boolean> get() = _filteredEventsShownResult
 
+    private val _eventModificationResult = MutableLiveData<Boolean>()
+    val eventModificationResult: LiveData<Boolean> get() = _eventModificationResult
+
 
 
     //set event
@@ -78,6 +76,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
         _event.value = event
     }
     fun setFilter(filter: Filter){
+        Log.d("setFilter","before setting")
         _filter.value = filter
         Log.d("setFilter", filter.id.toString())
     }
@@ -119,8 +118,10 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     }
 
     fun modifyEvent(eventId: String, event:Event) = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("insertEvent in viewmodel",filter.value?.id.toString())
-        //repository.modifyEvent()
+        Log.d("modifyEvent in viewmodel",event.placeName.toString())
+        repository.modifyEvent(eventId, event){result ->
+            _eventModificationResult.postValue(result)
+        }
     }
 
     fun insertFilter(filter: Filter)= viewModelScope.launch(Dispatchers.IO)  {
@@ -142,10 +143,11 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     }
 
     // fun delete event
-    fun deleteEvent() {
+    fun deleteEvent(event: Event) {
+        repository.deleteEvent(event,groupid,filter.value?.id.toString())
     }
     // fun delete filter
-    fun deleteFilter() {
+    fun deleteFilter(filter: Filter) {
     }
 
 //    fun updateFilteredEvents() {

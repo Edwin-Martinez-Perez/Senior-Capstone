@@ -48,16 +48,20 @@ class AddFilterFragment : Fragment() {
 
         binding.addFilterAddButton.setOnClickListener {
             // retrieve filter from edit text and validate
-            val filterName = binding.addFilterFilterEditText.editText?.text.toString()
+            var filterName = binding.addFilterFilterEditText.editText?.text.toString()
             Log.d("add filter fragment",filterName)
             if (checkFilterName(filterName)) {
                 // store in database
+                filterName = filterName.replaceFirstChar { c->
+                    c.titlecase()
+                }
                 val filter = Filter(name=filterName)
                 addFilterToDatabase(filter)
                 itineraryViewModel.filterInsertionResult.observe(viewLifecycleOwner){ result ->
                     if (result){
                         // make Toast
                         Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+                        Log.d("add filter fragment", filter.id.toString())
                         itineraryViewModel.setFilter(filter)
                         Log.d("add filter fragment", itineraryViewModel.filter.value.toString())
                         // go back to itinerary page

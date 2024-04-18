@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,6 +7,8 @@ plugins {
     id("kotlin-android")
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
+    // for API key
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -19,6 +23,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        //TODO change to be safe
+        //for Places API
+        buildConfigField("String", "PLACES_API_KEY", "AIzaSyCIozrnAqwwZP3U7iywRMmUDwDW9c0EHiU")
     }
 
     buildTypes {
@@ -37,8 +45,8 @@ android {
 
     buildFeatures {
         dataBinding = true
-        //material3 test
-        //compose = true
+        //for Place SDK
+        buildConfig = true
     }
 
     compileOptions {
@@ -74,11 +82,28 @@ dependencies {
     //navigation
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.navigation:navigation-fragment-ktx: 2.5.3")
-    //retrofit implementation
-    // implementation("com.square.retrofit2:retrofit:2.9.0") //commented out to connect to firebase
-    // implementation("com.square.retrofit2:converter-scalars:2.9.0") // commented out to connect to firebase
-    //room implementation
     implementation("androidx.room:room-ktx:2.4.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    //Place SDK
+    implementation("com.google.android.libraries.places:places:3.3.0")
+
+}
+
+//for API key
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "app/secrets.properties"
+
+    //TODO
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "app/local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }

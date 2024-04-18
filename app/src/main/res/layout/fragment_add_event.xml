@@ -22,12 +22,12 @@
         android:layout_height="wrap_content"
         android:text="Add Event"
         android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
         android:textColor="#001849"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textSize="30dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="25dp"/>
 
 <!--    <androidx.constraintlayout.widget.Guideline-->
 <!--        android:id="@+id/center_guideline"-->

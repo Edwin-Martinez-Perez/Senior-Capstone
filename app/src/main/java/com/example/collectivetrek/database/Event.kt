@@ -1,12 +1,17 @@
 package com.example.collectivetrek.database
 
+import android.graphics.Bitmap
+import java.net.URL
+
 data class Event(
+    val eventId: String? = null,
     val placeName: String? = null,
     val date: String? = null,
     val pinNum: Int? = null,
-    val coordinates: String? = null,
-    val address: String? = null,
-    val note: String? = null
+    var coordinates: String? = null,
+    var address: String? = null,
+    val note: String? = null,
+    var bitmap: String? = null
 )
 
 /*

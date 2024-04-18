@@ -106,18 +106,19 @@
     </fragment>
     <fragment
         android:id="@+id/itineraryFragment"
-        android:name="com.example.collectivetrek.ItineraryFragment"
+        android:name="com.example.collectivetrek.fragments.ItineraryFragment"
         android:label="ItineraryFragment" >
         <action
             android:id="@+id/action_itineraryFragment_to_addFilterFragment"
             app:destination="@id/addFilterFragment" />
         <action
             android:id="@+id/action_itineraryFragment_to_addEventFragment"
-            app:destination="@id/addEventFragment" />
+            app:destination="@id/addEventFragment" >
+        </action>
     </fragment>
     <fragment
         android:id="@+id/addFilterFragment"
-        android:name="com.example.collectivetrek.AddFilterFragment"
+        android:name="com.example.collectivetrek.fragments.AddFilterFragment"
         android:label="AddFilterFragment" >
         <action
             android:id="@+id/action_addFilterFragment_to_itineraryFragment"
@@ -125,11 +126,15 @@
     </fragment>
     <fragment
         android:id="@+id/addEventFragment"
-        android:name="com.example.collectivetrek.AddEventFragment"
+        android:name="com.example.collectivetrek.fragments.AddEventFragment"
         android:label="fragment_add_filter"
         tools:layout="@layout/fragment_add_filter" >
         <action
             android:id="@+id/action_addEventFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
+        <argument
+            android:name="groupId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>
