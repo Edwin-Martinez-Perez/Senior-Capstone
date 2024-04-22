@@ -11,9 +11,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.compose.ui.input.key.Key.Companion.I
 import androidx.databinding.DataBindingUtil.setContentView
@@ -34,6 +39,7 @@ import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
@@ -42,42 +48,41 @@ import java.util.Date
 /*
 ‼️クリック時フィルターの色を変える (別のフィルターがクリックされたらそのフィルターを戻す)
 ‼️Googleマップに飛ぶときに、パーミッションを取る (https://www.geeksforgeeks.org/how-to-get-current-location-in-android/)
-fabの形を変える (Theme)
 ‼️datepickerの、dateを4/31とかないものを表示しないようにする
-filterを消すボタンを作る(filterをaddするボタンの代わりに、編集ボタンを作って、addとdeleteができるようにする)
-filterを消すときに、もしeventがそのfilterにあったら、ほんとに消していいか聞く
 ‼️一番最初のデフォルトフィルターを作る！！
-eventsがない時のイラストを変える(サイズ、テキストも追加する)
 (Friday)add eventのaddressを入力するときに、検索候補を表示する
-(Friday)safe args 送れるようにする
-‼️delete menuを作る
-‼️‼️x y の値を変える bitmap
+‼️エラーzzf - shutdown(),
+☑️eventsがない時のイラストを変える(サイズ、テキストも追加する)
+☑️fabの形を変える (Theme)
+☑️filterを消すボタンを作る(filterをaddするボタンの代わりに、編集ボタンを作って、addとdeleteができるようにする)
+☑️filterを消すときに、もしeventがそのfilterにあったら、ほんとに消していいか聞く
+☑️filter delete
+☑️filter delete dialog
+☑️delete menuを作る
+☑️2回目以降の画像が保存されない問題() -> viewmodel no results たちを、使い終わったら元に戻す
+☑️x y の値を変える bitmap
 ☑️event cardviewのマックスサイズを指定する
 ☑️event cardview: 画像をラウンド&&正方形にする、マージンをたす、noteとaddressの隙間をなくす
 ☑️event cardview: サイズを内容に合わせて変える
 ☑️画像をイベントに追加する
+☑️(Friday)safe args 送れるようにする
 ☑️eventをスクローラブルにする
 ☑️(Friday)フィルターがクリックされた時&アプリ起動時に、eventsがロードしない時がある。callbackがfalseを返す。それを直す。
 ☑️Toastのデザインを変える
  */
 
-//TODO initializer
-//TODO when user open the itinerary for the first time (with the specific group id, show the first page),
+
 class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCallback {
 
     private var _binding: FragmentItineraryBinding? = null
     private val binding get() = _binding!!
 
-    private val preciseLoc = ACCESS_COARSE_LOCATION
-    private val approxLoc = ACCESS_FINE_LOCATION
-    private val permissions = listOf(
-        preciseLoc, approxLoc
-    )
-    // private val itineraryViewModel: ItineraryViewModel by activityViewModels()
 
     private val itineraryViewModel: ItineraryViewModel by activityViewModels {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
+
+
 
 
     override fun onCreateView(
@@ -146,9 +151,11 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
 
 
 
+        //val groupId = "ABCDEFID3"
+        val groupId = "ABCDEFID4"
         //itineraryViewModel.setFilters(groupId = "ABCDEFID1") //TODO change to groupid
         //itineraryViewModel.setFilters(groupId = "ABCDEFID2") //TODO change to groupid
-        itineraryViewModel.setFilters(groupId = "ABCDEFID3") //TODO change to groupid
+        itineraryViewModel.setFilters(groupId = groupId) //TODO change to groupid
 
         // show list of filtered events
         itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
@@ -236,6 +243,46 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             // go to add filter fragment
             findNavController().navigate(R.id.action_itineraryFragment_to_addFilterFragment)
         }
+
+        binding.deleteFilter.setOnClickListener {
+
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Deleting ${itineraryViewModel.getFilter().name}")
+                .setMessage("Are you sure deleting a ${itineraryViewModel.getFilter().name}?\n" +
+                        "This can delete all the events in ${itineraryViewModel.getFilter().name}.")
+                .setNeutralButton("Cancel") { dialog, which ->
+                    // Respond to neutral button press
+                }
+                .setPositiveButton("Delete") { dialog, which ->
+                    // Respond to positive button press
+                    // delete Filter and all the events under that
+                    itineraryViewModel.deleteFilter(itineraryViewModel.getFilter())
+
+                    //TODO refresh filters
+                    itineraryViewModel.filterDeletionResult.observe(viewLifecycleOwner){result->
+                        if(result){
+                            Log.d("filter deletion result", result.toString())
+                            itineraryViewModel.setFilters(groupId)
+                            itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
+                                if (filters.isEmpty()){
+                                    val filter = Filter(name = "Add Filter")
+                                    val placeHolderFilter = mutableListOf<Filter>()
+                                    placeHolderFilter.add(filter)
+
+                                    placeHolderFilter.let { filterAdapter.submitList(it) }
+
+                                    binding.itineraryImage.visibility = View.VISIBLE
+
+                                } else {
+                                    itineraryViewModel.setFilter(filters[0])
+                                    filters.let { filterAdapter.submitList(it) }
+                                }
+                            }
+                        }
+                    }
+                }
+                .show()
+        }
     }
 
     fun openMap(eventAddress: String){
@@ -258,11 +305,6 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         Log.d("openMap",address.toString())
         // TODO : make try and exception
 
-
-//        val gmmIntentUri = itineraryViewModel.getMapIntentUri("geo:41.77280699810813, -88.14363869347696?q=","30 N Brainard St, Naperville, IL 60540")
-//        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-//        mapIntent.setPackage("com.google.android.apps.maps")
-//        startActivity(mapIntent)
     }
 
 
@@ -321,13 +363,38 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         openMap(address)
     }
 
-    override fun onDeleteEventClick(clickedEvent:Event){
+    override fun onDeleteEventClick(clickedEvent:Event, deleteButton: ImageButton){
         Log.d("onDeleteClick", clickedEvent.placeName.toString())
-        //TODO delete event from database
-        itineraryViewModel.deleteEvent(clickedEvent)
 
-        //TODO reload the events after making sure the item is deleted
-        itineraryViewModel.setFilteredEvents()
+        val popupMenu = PopupMenu(requireContext(), deleteButton)
+
+        // Inflate the menu from XML
+        popupMenu.menuInflater.inflate(R.menu.delete_menu, popupMenu.menu)
+
+        // Set a click listener for menu items
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.delete_event_button -> {
+                    // Handle Popup Item 1 click
+
+                    //delete event from database
+                    itineraryViewModel.deleteEvent(clickedEvent)
+
+                    //reload the events after making sure the item is deleted
+                    itineraryViewModel.setFilteredEvents()
+                    true
+                }
+                R.id.cancel_event_button -> {
+                    // Handle Popup Item 2 click
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Show the popup menu
+        popupMenu.show()
+
     }
 
     private fun showDate(date: TextInputLayout) {

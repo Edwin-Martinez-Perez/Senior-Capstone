@@ -1,5 +1,6 @@
 package com.example.collectivetrek
 
+import android.R.id
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,7 @@ import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
@@ -22,19 +24,6 @@ class ItineraryRepository {
 
 
 
-//    fun getAllEvents(groupId: String): LiveData<List<Event>> {
-//        val allEventsLiveData = MutableLiveData<List<Event>>()
-//        val eventReference = filterRef.child(tempGroupId)
-//        Log.d("all Events Repository", allEventsLiveData.toString())
-//        val filters = getFilters(tempGroupId){ result ->
-//            _eventShownResult.postValue(result)
-//        }
-//
-//
-//        return allEventsLiveData
-//    }
-
-
     //filterId: String, groupId: String
     fun getFilteredEvents(groupId: String, filterId: String, callback: (Boolean) -> Unit): LiveData<List<Event>> {
         Log.d("getFilteredEvents",filterId)
@@ -43,7 +32,6 @@ class ItineraryRepository {
         val filterReference = filterRef.child(groupId).child(filterId).child("events")
         val eventIdsList = mutableListOf<String>()
 
-        //TODO this should be first
         filterReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -165,7 +153,7 @@ class ItineraryRepository {
                 } else {
                     callback(false) // Callback indicating failure
                 }
-                Log.d("Repository insert event","${event.placeName!!},${event.bitmap}")
+                Log.d("Repository insert event","${event.placeName!!}")
             }.addOnFailureListener{err ->
                 Log.d("Repository insert event",err.toString())
             }
@@ -212,12 +200,12 @@ class ItineraryRepository {
             }
     }
 
-    fun deleteEvent(event: Event, groupId:String, filterId: String) {
+    fun deleteEvent(eventId: String, groupId:String, filterId: String) {
         //delete from firebase
         //from event
         //from filter : find which filter the event is in, and delete
-        Log.d("deleteEvent", "${event.eventId+" "+groupId}")
-        val eventQuery: Query = eventRef.child(event.eventId!!)
+        Log.d("deleteEvent", "${eventId+" "+groupId}")
+        val eventQuery: Query = eventRef.child(eventId)
         val filterQuery: Query = filterRef.child(groupId).child(filterId).child("events")
 
         Log.d("event Query", eventQuery.ref.toString())
@@ -226,7 +214,7 @@ class ItineraryRepository {
         eventQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (eventSnapshot in dataSnapshot.children) {
-                    Log.d("deleting event", eventSnapshot.toString())
+                    Log.d("deleting event", eventSnapshot.key.toString())
                     eventSnapshot.ref.removeValue()
                 }
                 filterQuery.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -234,7 +222,7 @@ class ItineraryRepository {
                         for (filterSnapshot in dataSnapshot.children) {
                             Log.d("deleting filter", filterSnapshot.toString())
 
-                            if (filterSnapshot.key == event.eventId){
+                            if (filterSnapshot.key == eventId){
                                 Log.d("event found", filterSnapshot.key.toString())
                                 Log.d("event found", filterSnapshot.ref.toString())
                                 filterSnapshot.ref.removeValue()
@@ -255,10 +243,55 @@ class ItineraryRepository {
 
     }
 
-    fun deleteFilter(filter: Filter) {
+    fun deleteFilter(filter: Filter, groupId:String, callback: (Boolean) -> Unit) {
         //delete filter from firebase
+        val filterQuery: Query = filterRef.child(groupId).child(filter.id!!)
+        var eventIds = mutableListOf<String>()
 
-        //delete each event in the filter from firebase
+        filterQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (filterSnapshot in dataSnapshot.child("events").children) {
+                    Log.d("deleting filter  1", filterSnapshot.key.toString())
+//                    for (event in filterSnapshot.children){
+//                        Log.d("event id", event.key.toString())
+//                    }
+                    eventIds.add(filterSnapshot.key.toString())
+                }
+                //filterSnapshot.ref.removeValue()
+                Log.d("eventIds",eventIds.toString())
+                //delete event first
+                for (eventId in eventIds){
+                    Log.d("eventId being deleted",eventIds.toString())
+                    deleteEvent(eventId, groupId, filter.id!!)
+                }
+
+                //delete filter
+                for (filterSnapshot in dataSnapshot.children) {
+                    Log.d("deleting filter  2", filterSnapshot.ref.toString())
+                    filterSnapshot.ref.removeValue()
+                }
+
+                val idRef: DatabaseReference = filterRef.child(groupId).child(filter.id!!)
+
+                idRef.removeValue().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Data was successfully deleted
+                        println("Data successfully deleted for ID: $filter.id")
+                        Log.d("filter deletion", "before callback")
+                        callback(true)
+                    } else {
+                        // An error occurred during the delete operation
+                        println("Error deleting data for ID: $filter.id. ${task.exception?.message}")
+                    }
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("TAG", "onCancelled", databaseError.toException())
+                callback(false)
+            }
+        })
     }
 
 

@@ -38,7 +38,6 @@ import com.google.android.libraries.places.api.net.SearchByTextRequest
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.io.ByteArrayOutputStream
 import java.util.*
-import kotlin.math.max
 import kotlin.math.min
 
 
@@ -55,6 +54,9 @@ class AddEventFragment : Fragment() {
     private val _bitmapSetResult = MutableLiveData<Boolean>()
     val bitmapSetResult: LiveData<Boolean> get() = _bitmapSetResult
 
+    private val _coordinatesSetResult = MutableLiveData<Boolean>()
+    val coordinatesSetResult: LiveData<Boolean> get() = _coordinatesSetResult
+
     val args: AddEventFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +66,15 @@ class AddEventFragment : Fragment() {
         // Log an error if apiKey is not set.
         if (apiKey.isEmpty() || apiKey == "DEFAULT_API_KEY") {
             Log.e("Places test", "No api key")
-        }else {
+        } else {
+            Log.d("onCreate","places initializing")
             // Initialize Places API client
-            Places.initialize(requireContext(), apiKey)
+            if (!Places.isInitialized()){
+                Places.initialize(requireContext(), apiKey)
+//                placesClient = Places.createClient(requireContext())
+            }
         }
 
-
-    // Continue with other initialization tasks or setup
     }
 
     override fun onCreateView(
@@ -92,16 +96,16 @@ class AddEventFragment : Fragment() {
 
         placesClient = Places.createClient(requireContext())
 
+        Log.d("insertion result check0", itineraryViewModel.dataInsertionResult.value.toString())
+
         val groupId = args.groupId
         Log.d("groupId received",groupId.toString())
 
         val navController = NavHostFragment.findNavController(this@AddEventFragment)
         Log.d("on view created","on view created")
 
-        // TODO
-        // add text watcher to place name and user leaves w/o any input, error
 
-        //TODO
+
         binding.addEventDateEditText.setOnClickListener {
             Log.d("add event fragment","clicklistner")
             //showDate()
@@ -109,6 +113,8 @@ class AddEventFragment : Fragment() {
         }
 
         binding.addEventAddButton.setOnClickListener {
+            Log.d("insertion result check00", itineraryViewModel.dataInsertionResult.value.toString())
+
             // retrieve filter from edit text and validate
             var placeName = binding.addEventPlaceEditText.editText?.text.toString()
             val address = binding.addEventAddressEditText.editText?.text.toString()
@@ -124,18 +130,38 @@ class AddEventFragment : Fragment() {
             // validation
             if (checkEventFields(event)){
                 Log.d("check event fields result", "true")
-                if (!event.bitmap.isNullOrEmpty()) {
-                    bitmapSetResult.observe(viewLifecycleOwner){ result ->
-                        if (result){
-                            // store in database
-                            addEventToDataBase(event)
-                        } else {
-                            Log.d("bitmapsetresult false", event.toString())
+//                if (!event.bitmap.isNullOrEmpty()) {
+//                bitmapSetResult.observe(viewLifecycleOwner){ result ->
+//                    Log.d("bitmapsetresult observe1", result.toString())
+//                    if (result){
+//                        Log.d("bitmapsetresult observe2", result.toString())
+//                        // store in database
+//                        addEventToDataBase(event)
+//                    } else {
+//                        Log.d("bitmapsetresult false", event.toString())
+//                    }
+//                }
+//                }
+
+                coordinatesSetResult.observe(viewLifecycleOwner) { result ->
+                    Log.d("coordinatessetresult",result.toString())
+                    if (!result) {
+                        //coordinates are not set = no address
+                        addEventToDataBase(event)
+                    } else {
+                        Log.d("bitmapsetresult observe0", result.toString())
+                        bitmapSetResult.observe(viewLifecycleOwner){ result ->
+                            Log.d("bitmapsetresult observe1", result.toString())
+                            if (result){
+                                Log.d("bitmapsetresult observe2", result.toString())
+                                // store in database
+                                addEventToDataBase(event)
+                            } else {
+                                Log.d("bitmapsetresult false", event.toString())
+                            }
                         }
                     }
-                }
-                else {
-                    addEventToDataBase(event)
+
                 }
 
                 itineraryViewModel.dataInsertionResult.observe(viewLifecycleOwner){ result ->
@@ -143,12 +169,14 @@ class AddEventFragment : Fragment() {
                         // make Toast
                         Toast.makeText(context, "Event added.", Toast.LENGTH_LONG).show()
                         Log.d("add event fragment",itineraryViewModel.filter.value?.id.toString())
+                        //shutDown()
+                        itineraryViewModel.setDataInsertionResultFalse()
                         // go back to itinerary page
                         navController.popBackStack()
                     }
-                    else{
-                        Toast.makeText(context, "Failed.", Toast.LENGTH_LONG).show()
-                    }
+//                    else{
+//                        //Toast.makeText(context, "Failed.", Toast.LENGTH_LONG).show()
+//                    }
                 }
             } else {
                 Log.d("check event fields result", "false")
@@ -159,7 +187,8 @@ class AddEventFragment : Fragment() {
             // make Toast
             // go back to itinerary page
             Log.d("add filter","cancel clicked")
-            //findNavController().popBackStack()
+            //shutDown()
+
             navController.popBackStack()
         }
     }
@@ -196,10 +225,20 @@ class AddEventFragment : Fragment() {
             val coordinates = getCoordinates(event.address.toString())
             if (!coordinates.isNullOrEmpty()) { //if coordinates are not null
                 event.coordinates = coordinates //save to data object
+                _coordinatesSetResult.postValue(true)
                 setBitmap(event) { result ->
                     _bitmapSetResult.postValue(result)
+                    Log.d("bitmapsetResult",bitmapSetResult.toString())
                 }
+            } else {
+                Log.d("coordinates null", "coordinatesSetResultFalse")
+                //TODO coordinates Round Result
+                _coordinatesSetResult.postValue(false)
             }
+        } else {
+            Log.d("coordinates null2", "coordinatesSetResultFalse")
+            //TODO coordinates Round Result
+            _coordinatesSetResult.postValue(false)
         }
 
         Log.d("before return", "before return")
@@ -216,7 +255,6 @@ class AddEventFragment : Fragment() {
     // TODO add constraints, startdate, enddate, valid date
     // TODO change theme
     private fun showDate() {
-        val calendar = Calendar.getInstance()
 
         // Set up the MaterialDatePicker
         val builder = MaterialDatePicker.Builder.datePicker()
@@ -258,52 +296,13 @@ class AddEventFragment : Fragment() {
         return null
     }
 
-    //TODO !!!
-    // make sure to return after getting response
-    // get bitmap here too
-    fun getPlaceId(coordinates: String, eventAddress: String):String?{
-        //TODO autocomplete
-        //https://developers.google.com/codelabs/maps-platform/places-101-android-kotlin#7
-        var placeId: String? = null
-        val lat = coordinates.split('/')[0].toDouble()
-        val long = coordinates.split('/')[1].toDouble()
-
-        // Define the LatLng object representing the location
-        val latLng = LatLng(lat, long)
-
-        // Initialize the Places API
-        val placesClient: PlacesClient = Places.createClient(context)
-        val placeFields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS)
-
-        println("address: $eventAddress")
-        val request = SearchByTextRequest.builder(eventAddress,placeFields)
-            .setMaxResultCount(10)
-            .build()
-        println("request: $request")
-
-        placesClient.searchByText(request)
-            .addOnSuccessListener { response ->
-                println("Response: $response")
-                placeId = response.places[0].id
-
-            }
-            .addOnFailureListener{exeption ->
-                println("Exeption: $exeption")
-            }
-
-        println("Place ID: $placeId")
-        Log.d("getPlaceId", "Place ID: $placeId")
-
-        return placeId
-    }
-
-    fun searchPlaces(eventAddress: String, callback: (String?, PhotoMetadata?, Exception?) -> Unit) {
-        //val placesClient: PlacesClient = Places.createClient(context)
+    private fun searchPlaces(eventAddress: String, callback: (String?, PhotoMetadata?, Exception?) -> Unit) {
         val placeFields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS)
         val request = SearchByTextRequest.builder(eventAddress,placeFields)
             .setMaxResultCount(10)
             .build()
         println("request: $request")
+        Log.d("placesClient",placesClient.toString())
         placesClient.searchByText(request)
             .addOnSuccessListener { response ->
                 println("Response: $response")
@@ -317,7 +316,7 @@ class AddEventFragment : Fragment() {
             }
     }
 
-    fun setBitmap(event: Event, callback: (Boolean?) -> Unit){
+    private fun setBitmap(event: Event, callback: (Boolean?) -> Unit){
         searchPlaces(event.address!!){placeId, photoMetaData, exception ->
             if (placeId != null && photoMetaData != null){
                 println("placeId callback: $placeId")
@@ -340,7 +339,7 @@ class AddEventFragment : Fragment() {
         }
     }
 
-    fun bitMapToString(bitmap: Bitmap, callback: (String) -> Unit) {
+    private fun bitMapToString(bitmap: Bitmap, callback: (String) -> Unit) {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
         val b = baos.toByteArray()
@@ -351,9 +350,6 @@ class AddEventFragment : Fragment() {
 
     private fun getBitmap(placeId:String, photoMetadata:PhotoMetadata, callback: (Bitmap?, Exception?) -> Unit){
         println("getBitmap: $placeId, photoMetadata: $photoMetadata")
-
-        //val photoMetadata = photoMetadata.first()
-        //val placesClient = Places.createClient(requireContext())
         var bitmap: Bitmap? = null
         val originalWidth = photoMetadata.width // Width of the original photo
         val originalHeight = photoMetadata.height // Height of the original photo
@@ -365,6 +361,9 @@ class AddEventFragment : Fragment() {
             .setMaxWidth(500) // Set maximum width of the photo
             .setMaxHeight(500)
             .build()
+
+        //placesClient = Places.createClient(context)
+        Log.d("placesClient",placesClient.toString())
 
         placesClient.fetchPhoto(photoRequest)
             .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
@@ -417,8 +416,10 @@ class AddEventFragment : Fragment() {
         return roundedBitmap
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        Log.d("on destryo view", placesClient.toString())
     }
 }

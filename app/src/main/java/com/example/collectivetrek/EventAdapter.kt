@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ interface EventAdapterCallback {
 }
 
 interface EventAdapterDeleteCallback {
-    fun onDeleteEventClick(event: Event)
+    fun onDeleteEventClick(event: Event, deleteButton: ImageButton)
 }
 class EventAdapter(val clickListener: EventItineraryListener, private val callback: EventAdapterCallback, private val callbackDelete: EventAdapterDeleteCallback) :
     ListAdapter<Event, EventAdapter.EventItineraryViewHolder>(EventsComparator()){
@@ -41,7 +42,8 @@ class EventAdapter(val clickListener: EventItineraryListener, private val callba
         }
         holder.binding.deleteButton.setOnClickListener {
             Log.d("deleteButton", "clicked")
-            callbackDelete.onDeleteEventClick(current)
+
+            callbackDelete.onDeleteEventClick(current, holder.binding.deleteButton)
         }
         if  (current.date == null){
             holder.binding.eventDateText.visibility = View.GONE
