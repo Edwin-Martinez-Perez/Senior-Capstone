@@ -51,8 +51,7 @@
                 android:textSize="20dp"
                 android:textColor="#001a40"
                 android:text="@{eventData.placeName}"
-                android:textSize="18dp"
-                android:textColor="#001a40"
+
                 tools:text="Place Name"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -70,8 +69,6 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:onClick="@{() -> itineraryFragment.openMap(eventData.address)}"
                 android:layout_marginTop="5dp"
-                android:textSize="12dp"
-                android:textColor="#001a40"
                 tools:text="123 W Sample Street, SA, United States"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"
                 app:layout_constraintTop_toBottomOf="@id/event_pin"/>
@@ -85,7 +82,6 @@
                 android:textSize="12dp"
                 android:textColor="#001a40"
                 android:text="@{eventData.date}"
-                tools:text="Jan 20, 2024"
                 tools:text="Jan 20, 2024"
                 app:layout_constraintTop_toBottomOf="@id/address_text"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"/>

@@ -1,13 +1,11 @@
 package com.example.collectivetrek
 
-
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,28 +13,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel() {
     // TODO
     // get group id from the group page before coming to itinerary page
-
     //val groupid = "ABCDEFID2"
     val groupid = "ABCDEFID1"
-
-    val groupid = "group1"
-
-    val itinerarydb = Firebase.database.reference.child("Itinerary")
-    val eventdb = Firebase.database.reference.child("Event")
-
 
 
     private val _event = MutableLiveData<Event>()
@@ -44,7 +30,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     private val _filter = MutableLiveData<Filter>()
     val filter: LiveData<Filter> = _filter
-
 
 //    private val _filterId = MutableLiveData<String>()
 //    val filterId: LiveData<String> = _filterId
@@ -86,17 +71,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     private val _filteredEventsShownResult = MutableLiveData<Boolean>()
     val filteredEventsShownResult: LiveData<Boolean> get() = _filteredEventsShownResult
 
-    //live data for events
-    //retrieve all the events from the group that user is currently in
-    //TODO create function in repository to retrieve all the data
-    val allEvents: LiveData<List<Event>> = repository.getFilteredEvents("filterid",groupid)
-
-    // TODO get filter id somehow
-    val filteredEvents : LiveData<List<Event>> = repository.getFilteredEvents("filterid",groupid)
-
-    val filteres: LiveData<List<Filter>> = repository.getFilters(groupid)
-
-
 
 
     //set event
@@ -105,7 +79,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     }
     fun setFilter(filter: Filter){
         _filter.value = filter
-
         Log.d("setFilter", filter.id.toString())
     }
 
@@ -129,13 +102,14 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
         }
     }
 
-    
+    //get
     fun getEvent(): Event{
         return event.value!!
     }
     fun getFilter(): Filter{
         return filter.value!!
     }
+
 
     fun insertEvent(event: Event) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("insertEvent in viewmodel",filter.value?.id.toString())
@@ -160,14 +134,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     fun getMapIntentUri(coordinates: String, address: String): Uri {
         // Creates an Intent that will load a map of coordinates and pin of address
         return Uri.parse(coordinates + Uri.encode(address))
-
-    fun insertEvent(event: Event) {
-        repository.insertEvent(event)
-    }
-
-    fun insertFilter(filter: Filter) {
-        repository.insertFilter(filter)
-
     }
 
     // TODO let user add, modify note later
@@ -182,7 +148,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     fun deleteFilter() {
     }
 
-
 //    fun updateFilteredEvents() {
 //        viewModelScope.launch {
 //            val events = repository.getFilteredEvents()
@@ -190,7 +155,6 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 //            Log.d("filteredEvents", _filteredEvents.value.toString())
 //        }
 //    }
-
 }
 
 class ItineraryViewModelFactory(private val repository: ItineraryRepository) : ViewModelProvider.Factory {

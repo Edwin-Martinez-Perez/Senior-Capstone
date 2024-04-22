@@ -1,6 +1,5 @@
 package com.example.collectivetrek
 
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -61,4 +60,3 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 class FilterItineraryListener(val clickListener: (filter: Filter) -> Unit) {
     fun onClick(filter: Filter) = clickListener(filter)
 }
-
