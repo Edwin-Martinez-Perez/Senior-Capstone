@@ -1,7 +1,6 @@
 package com.example.collectivetrek.fragments
 
 import android.app.AlertDialog
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
@@ -35,21 +35,19 @@ class ProfileFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
 
-    private val PICK_IMAGE_REQUEST = 71
-    private var selectedImageUri: Uri? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        // Initialize FirebaseAuth instance
+        // Get Firebase instance
         auth = FirebaseAuth.getInstance()
+
         // Get current user
         currentUser = auth.currentUser!!
 
-        // Initialize views
+        // Get view variables
         firstNameEditText = view.findViewById(R.id.editTextFirstName)
         lastNameEditText = view.findViewById(R.id.editTextLastName)
         emailEditText = view.findViewById(R.id.editTextEmail)
@@ -58,13 +56,13 @@ class ProfileFragment : Fragment() {
         deleteButton = view.findViewById(R.id.buttonDelete)
         logoutButton = view.findViewById(R.id.buttonLogOut)
 
-        // Set initial values from current user's profile
+        // Set email information
         emailEditText.setText(currentUser.email)
 
         // Disable editing of email field
         emailEditText.isEnabled = false
 
-        // Fetch and display user's first name and last name from the database
+        // Get user's first and last name from database
         val userReference = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.uid)
         userReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -124,25 +122,29 @@ class ProfileFragment : Fragment() {
                             if (deletionTask.isSuccessful) {
                                 // Account deleted successfully
                                 // Navigate to the welcome page
+                                Toast.makeText(context, "Account deleted!", Toast.LENGTH_SHORT)
+                                    .show()
                                 val action = ProfileFragmentDirections.actionProfileFragmentToWelcomeFragment()
                                 findNavController().navigate(action)
+
                             } else {
                                 // Account deletion failed
                                 Log.e(TAG, "Error deleting account", deletionTask.exception)
-                                // Show error message if needed
+                                Toast.makeText(context, "Try deleting account again.", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                 } else {
                     // User data deletion failed
                     Log.e(TAG, "Error deleting user data from database", task.exception)
-                    // Show error message if needed
                 }
             }
     }
 
-
     private fun logoutUser() {
         auth.signOut()
+        Toast.makeText(context, "Successfully signed out!", Toast.LENGTH_SHORT)
+            .show()
         // Navigate to the welcome page
         val action = ProfileFragmentDirections.actionProfileFragmentToWelcomeFragment()
         findNavController().navigate(action)
@@ -177,16 +179,20 @@ class ProfileFragment : Fragment() {
                             if (databaseTask.isSuccessful) {
                                 // Show success message for database update
                                 Log.d(TAG, "User data updated in database")
+                                Toast.makeText(context, "User data updated!", Toast.LENGTH_SHORT)
+                                    .show()
                             } else {
                                 // Database update failed
                                 Log.e(TAG, "Error updating user data in database", databaseTask.exception)
-                                // Show error message if needed
+                                Toast.makeText(context, "Please try to save again.", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                 } else {
                     // Profile update failed
                     Log.e(TAG, "Error updating profile", profileTask.exception)
-                    // Show error message if needed
+                    Toast.makeText(context, "Please try to save again.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
     }

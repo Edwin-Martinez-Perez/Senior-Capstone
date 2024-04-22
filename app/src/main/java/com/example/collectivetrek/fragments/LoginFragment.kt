@@ -11,12 +11,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 import com.example.collectivetrek.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginFragment : Fragment() {
 
     // Create variables
     private lateinit var binding: LoginBinding
     private lateinit var auth: FirebaseAuth
+    private lateinit var currentUser: FirebaseUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +66,9 @@ class LoginFragment : Fragment() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-                    findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+                    currentUser = auth.currentUser!!
+                    val action = LoginFragmentDirections.actionLoginFragmentToGroup(currentUser.toString())
+                    findNavController().navigate(action)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
@@ -73,7 +77,6 @@ class LoginFragment : Fragment() {
                         "Authentication failed.",
                         Toast.LENGTH_SHORT,
                     ).show()
-
                 }
             }
     }

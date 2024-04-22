@@ -30,18 +30,22 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Get instance from Firebase
         auth = FirebaseAuth.getInstance()
 
+        // Binding for register button
         binding.registerButton.setOnClickListener {
             signUp()
         }
 
+        // Binding for the back button
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
         }
     }
 
     private fun signUp() {
+        // Create variables
         val firstNameTextInput = binding.addFirstNameEditText
         val lastNameTextInput = binding.addLastNameEditText
         val emailTextInput = binding.addEmailEditText
@@ -57,30 +61,33 @@ class RegisterFragment : Fragment() {
         val email = emailEditText?.text.toString()
         val password = passwordEditText?.text.toString()
 
+        // Make sure all fields are full
         if (firstName.isBlank() || lastName.isBlank() || email.isBlank() || password.isBlank()) {
             Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-
+        // Authentication for creating user with email and password
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
+                    // Create variables and save information to user
                     val user = auth.currentUser
-                    val userId = user?.uid // Retrieve the user's unique identifier (UID)
-                    val newUser = User(firstName, lastName, email, password)
-
+                    val userId = user?.uid
+                    val newUser = User(firstName, lastName, email)
+                    // Validate user ID
                     if (userId != null) {
+                        // Get database reference
                         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
                         databaseReference.child(userId).setValue(newUser)
                             .addOnSuccessListener {
-                                // User data added to database successfully
+                                // Toast for when user registers
                                 Toast.makeText(context, "User registered!", Toast.LENGTH_SHORT)
                                     .show()
                                 findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
                             }
                             .addOnFailureListener { exception ->
-                                // Failed to add user data to database
+                                // Toast if user cannot register
                                 Log.e(TAG, "Failed to add user data to database", exception)
                                 Toast.makeText(
                                     context,
@@ -88,8 +95,8 @@ class RegisterFragment : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                    // If user is null
                     } else {
-                        // User UID is null
                         Log.e(TAG, "User UID is null")
                         Toast.makeText(context, "Failed to register user", Toast.LENGTH_SHORT)
                             .show()
