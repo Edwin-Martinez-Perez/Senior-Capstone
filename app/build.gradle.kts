@@ -37,6 +37,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        viewBinding = true
         //material3 test
         //compose = true
     }
@@ -82,5 +83,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.4.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.4.0")
+
 
 }
