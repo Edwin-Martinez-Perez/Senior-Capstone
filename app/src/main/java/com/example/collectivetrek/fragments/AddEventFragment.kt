@@ -1,28 +1,44 @@
 package com.example.collectivetrek.fragments
 
-import android.app.DatePickerDialog
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
+import android.location.Geocoder
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Constraints
-import androidx.core.content.ContextCompat
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.navArgs
+import com.example.collectivetrek.BuildConfig
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.databinding.FragmentAddEventBinding
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.PhotoMetadata
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
+import com.google.android.libraries.places.api.net.FetchPhotoResponse
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchByTextRequest
 import com.google.android.material.datepicker.MaterialDatePicker
+import java.io.ByteArrayOutputStream
 import java.util.*
-import kotlin.reflect.typeOf
+import kotlin.math.min
 
 
 class AddEventFragment : Fragment() {
@@ -31,6 +47,34 @@ class AddEventFragment : Fragment() {
 
     private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
+    }
+
+    private lateinit var placesClient: PlacesClient
+
+    private val _bitmapSetResult = MutableLiveData<Boolean>()
+    val bitmapSetResult: LiveData<Boolean> get() = _bitmapSetResult
+
+    private val _coordinatesSetResult = MutableLiveData<Boolean>()
+    val coordinatesSetResult: LiveData<Boolean> get() = _coordinatesSetResult
+
+    val args: AddEventFragmentArgs by navArgs()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val apiKey = BuildConfig.PLACES_API_KEY
+
+        // Log an error if apiKey is not set.
+        if (apiKey.isEmpty() || apiKey == "DEFAULT_API_KEY") {
+            Log.e("Places test", "No api key")
+        } else {
+            Log.d("onCreate","places initializing")
+            // Initialize Places API client
+            if (!Places.isInitialized()){
+                Places.initialize(requireContext(), apiKey)
+//                placesClient = Places.createClient(requireContext())
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -50,47 +94,92 @@ class AddEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        placesClient = Places.createClient(requireContext())
+
+        Log.d("insertion result check0", itineraryViewModel.dataInsertionResult.value.toString())
+
+        val groupId = args.groupId
+        Log.d("groupId received",groupId.toString())
+
         val navController = NavHostFragment.findNavController(this@AddEventFragment)
         Log.d("on view created","on view created")
 
-        // TODO
-        // add text watcher to place name and user leaves w/o any input, error
 
-        //TODO
+
         binding.addEventDateEditText.setOnClickListener {
             Log.d("add event fragment","clicklistner")
             //showDate()
-            showDate2()
+            showDate()
         }
 
-        // TODO
         binding.addEventAddButton.setOnClickListener {
+            Log.d("insertion result check00", itineraryViewModel.dataInsertionResult.value.toString())
+
             // retrieve filter from edit text and validate
-            val placeName = binding.addEventPlaceEditText.editText?.text.toString()
+            var placeName = binding.addEventPlaceEditText.editText?.text.toString()
             val address = binding.addEventAddressEditText.editText?.text.toString()
-            var date = binding.addEventDateTextInput.editText?.text.toString()
+            val date = binding.addEventDateTextInput.editText?.text.toString()
             val note = binding.addEventNoteEditText.editText?.text.toString()
 
+            placeName = placeName.replaceFirstChar { c->
+                c.titlecase()
+            }
 
-            val event = Event(placeName,address=address, date = date, note = note)
+            val event = Event(placeName=placeName,address=address, date=date, note=note)
 
             // validation
             if (checkEventFields(event)){
-                // store in database
-                addEventToDataBase(event)
+                Log.d("check event fields result", "true")
+//                if (!event.bitmap.isNullOrEmpty()) {
+//                bitmapSetResult.observe(viewLifecycleOwner){ result ->
+//                    Log.d("bitmapsetresult observe1", result.toString())
+//                    if (result){
+//                        Log.d("bitmapsetresult observe2", result.toString())
+//                        // store in database
+//                        addEventToDataBase(event)
+//                    } else {
+//                        Log.d("bitmapsetresult false", event.toString())
+//                    }
+//                }
+//                }
+
+                coordinatesSetResult.observe(viewLifecycleOwner) { result ->
+                    Log.d("coordinatessetresult",result.toString())
+                    if (!result) {
+                        //coordinates are not set = no address
+                        addEventToDataBase(event)
+                    } else {
+                        Log.d("bitmapsetresult observe0", result.toString())
+                        bitmapSetResult.observe(viewLifecycleOwner){ result ->
+                            Log.d("bitmapsetresult observe1", result.toString())
+                            if (result){
+                                Log.d("bitmapsetresult observe2", result.toString())
+                                // store in database
+                                addEventToDataBase(event)
+                            } else {
+                                Log.d("bitmapsetresult false", event.toString())
+                            }
+                        }
+                    }
+
+                }
 
                 itineraryViewModel.dataInsertionResult.observe(viewLifecycleOwner){ result ->
                     if (result){
                         // make Toast
                         Toast.makeText(context, "Event added.", Toast.LENGTH_LONG).show()
                         Log.d("add event fragment",itineraryViewModel.filter.value?.id.toString())
+                        //shutDown()
+                        itineraryViewModel.setDataInsertionResultFalse()
                         // go back to itinerary page
                         navController.popBackStack()
                     }
-                    else{
-                        Toast.makeText(context, "Failed.", Toast.LENGTH_LONG).show()
-                    }
+//                    else{
+//                        //Toast.makeText(context, "Failed.", Toast.LENGTH_LONG).show()
+//                    }
                 }
+            } else {
+                Log.d("check event fields result", "false")
             }
         }
 
@@ -98,12 +187,13 @@ class AddEventFragment : Fragment() {
             // make Toast
             // go back to itinerary page
             Log.d("add filter","cancel clicked")
-            //findNavController().popBackStack()
+            //shutDown()
+
             navController.popBackStack()
         }
     }
 
-    fun checkEventFields(event:Event) : Boolean {
+    private fun checkEventFields(event:Event) : Boolean {
         if (event.placeName!!.isEmpty()) {
             binding.addEventPlaceEditText.error = "Place name required."
             return false
@@ -112,15 +202,6 @@ class AddEventFragment : Fragment() {
             binding.addEventPlaceEditText.error = "Too long."
             return false
         }
-
-        if (event.address != null){
-            if (event.address!!.length > 400) {
-                binding.addEventPlaceEditText.error = "Too long."
-                return false
-            }
-        }
-
-
         if (event.date!!.isNotEmpty()) {
             if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
                 binding.addEventDateTextInput.error = "Invalid date length."
@@ -135,47 +216,45 @@ class AddEventFragment : Fragment() {
             }
         }
 
+        if (event.address!!.isNotEmpty()){
+            Log.d("event address", event.address.toString())
+            if (event.address!!.length > 400) {
+                binding.addEventPlaceEditText.error = "Too long."
+                return false
+            }
+            val coordinates = getCoordinates(event.address.toString())
+            if (!coordinates.isNullOrEmpty()) { //if coordinates are not null
+                event.coordinates = coordinates //save to data object
+                _coordinatesSetResult.postValue(true)
+                setBitmap(event) { result ->
+                    _bitmapSetResult.postValue(result)
+                    Log.d("bitmapsetResult",bitmapSetResult.toString())
+                }
+            } else {
+                Log.d("coordinates null", "coordinatesSetResultFalse")
+                //TODO coordinates Round Result
+                _coordinatesSetResult.postValue(false)
+            }
+        } else {
+            Log.d("coordinates null2", "coordinatesSetResultFalse")
+            //TODO coordinates Round Result
+            _coordinatesSetResult.postValue(false)
+        }
+
+        Log.d("before return", "before return")
         return true
     }
 
     private fun addEventToDataBase(event:Event) {
-        Log.d("Add event to database", "called")
+        Log.d("Add event to database filterId", itineraryViewModel.filter.value?.id.toString())
         itineraryViewModel.insertEvent(event)
+
     }
 
     //TODO show a month of trip starting date
-    private fun showDate() {
-        val calendar = Calendar.getInstance()
-
-        val yyyy = calendar.get(Calendar.YEAR)
-        val mm = calendar.get(Calendar.MONTH)
-        val dd = calendar.get(Calendar.DAY_OF_MONTH)
-
-
-        // on below line we are creating a
-        // variable for date picker dialog.
-        val datePickerDialog = DatePickerDialog(
-            // on below line we are passing context.
-            //R.style.DatePickerDialogTheme,
-            requireContext(), { _, year, monthOfYear, dayOfMonth ->
-                val date = ((monthOfYear + 1).toString() + "/" + dayOfMonth.toString() + "/" + year)
-                binding.addEventDateTextInput.editText?.setText(date)
-            },
-            yyyy,
-            mm,
-            dd
-        )
-        datePickerDialog.show()
-        datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-        datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-        // TODO focus on the month of trip
-        // use Constraints
-    }
-
     // TODO add constraints, startdate, enddate, valid date
     // TODO change theme
-    private fun showDate2() {
-        val calendar = Calendar.getInstance()
+    private fun showDate() {
 
         // Set up the MaterialDatePicker
         val builder = MaterialDatePicker.Builder.datePicker()
@@ -193,7 +272,7 @@ class AddEventFragment : Fragment() {
             calendar.time = selectedDate
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH) + 1
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH) + 1
 
             val formattedDate = "$month/$day/$year"
             binding.addEventDateTextInput.editText?.setText(formattedDate)
@@ -201,11 +280,146 @@ class AddEventFragment : Fragment() {
 
         // Show the MaterialDatePicker
         materialDatePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
-
+        // TODO change the color of positive and negative button
     }
+
+    fun getCoordinates(eventAddress: String):String?{
+        val coder = Geocoder(requireContext())
+        var address = coder.getFromLocationName(eventAddress, 1)
+        if (address!!.isNotEmpty()){
+            val lat = address[0].latitude
+            val long = address[0].longitude
+            return "$lat/$long"
+        } else{
+            Log.d("getCoordinates fail","not able to find coordinates")
+        }
+        return null
+    }
+
+    private fun searchPlaces(eventAddress: String, callback: (String?, PhotoMetadata?, Exception?) -> Unit) {
+        val placeFields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS)
+        val request = SearchByTextRequest.builder(eventAddress,placeFields)
+            .setMaxResultCount(10)
+            .build()
+        println("request: $request")
+        Log.d("placesClient",placesClient.toString())
+        placesClient.searchByText(request)
+            .addOnSuccessListener { response ->
+                println("Response: $response")
+                val placeId = response.places.firstOrNull()?.id
+                val photoMetadata = response.places.firstOrNull()?.photoMetadatas?.first()
+                callback(placeId,photoMetadata, null)
+            }
+            .addOnFailureListener { exception ->
+                println("Exception: $exception")
+                callback(null, null, exception)
+            }
+    }
+
+    private fun setBitmap(event: Event, callback: (Boolean?) -> Unit){
+        searchPlaces(event.address!!){placeId, photoMetaData, exception ->
+            if (placeId != null && photoMetaData != null){
+                println("placeId callback: $placeId")
+                //event.bitmap = getBitmap(placeId)
+                getBitmap(placeId=placeId, photoMetadata = photoMetaData){ bitmap, exception ->
+                    if (bitmap != null){
+                        bitMapToString(bitmap){bitmapString ->
+                            event.bitmap = bitmapString
+                            Log.d("bitmap callback done", "done")
+                            callback(true)
+                        }
+                    } else {
+                        println("Exeption: $exception")
+                        callback(false)
+                    }
+                }
+            } else {
+                println("Exeption: $exception")
+            }
+        }
+    }
+
+    private fun bitMapToString(bitmap: Bitmap, callback: (String) -> Unit) {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val b = baos.toByteArray()
+
+        callback(Base64.encodeToString(b, Base64.DEFAULT))
+    }
+
+
+    private fun getBitmap(placeId:String, photoMetadata:PhotoMetadata, callback: (Bitmap?, Exception?) -> Unit){
+        println("getBitmap: $placeId, photoMetadata: $photoMetadata")
+        var bitmap: Bitmap? = null
+        val originalWidth = photoMetadata.width // Width of the original photo
+        val originalHeight = photoMetadata.height // Height of the original photo
+        Log.d("originalWidth",originalWidth.toString())
+        Log.d("originalHeight",originalHeight.toString())
+
+        // 4. Construct the URL for the photo
+        val photoRequest = FetchPhotoRequest.builder(photoMetadata)
+            .setMaxWidth(500) // Set maximum width of the photo
+            .setMaxHeight(500)
+            .build()
+
+        //placesClient = Places.createClient(context)
+        Log.d("placesClient",placesClient.toString())
+
+        placesClient.fetchPhoto(photoRequest)
+            .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
+                Log.d("bitmap width", fetchPhotoResponse.bitmap.width.toString())
+                Log.d("bitmap height", fetchPhotoResponse.bitmap.height.toString())
+                val xy = (fetchPhotoResponse.bitmap.width - 200) / 2 //TODO change the xy to be appropriate for any image size
+                //bitmap = Bitmap.createBitmap(fetchPhotoResponse.bitmap, xy, xy, 200,200)
+                bitmap = getShapedBitmap(fetchPhotoResponse.bitmap,xy, 20f)
+                Log.d("bitmap",bitmap.toString())
+                callback(bitmap, null)
+                //callback(roundedCornerImage, null)
+            }
+            .addOnFailureListener { exception: Exception ->
+                // Handle failure to fetch photo
+                Log.d("bitmap failed",exception.message.toString())
+                callback(null, exception)
+            }
+
+        //https://developers.google.com/maps/documentation/places/android-sdk/photos
+    }
+
+    fun getShapedBitmap(bitmap: Bitmap, xy:Int, cornerRadius: Float): Bitmap{
+        var squareSize = 200
+        var x = bitmap.width
+        if (x>squareSize){
+            x = (bitmap.width - 200) / 2
+        }
+        if (x+squareSize>bitmap.width){
+            x = 0
+        }
+        var y = bitmap.height
+        if (y>squareSize){
+            y = (bitmap.height - 200) / 2
+        }
+        if (y+squareSize>bitmap.height){
+            y = 0
+        }
+        if (bitmap.width < squareSize || bitmap.height < squareSize){
+            squareSize = min( bitmap.width,bitmap.height)
+        }
+        val squaredBitmap = Bitmap.createBitmap(bitmap, x, y, squareSize,squareSize)
+        val roundedBitmap = Bitmap.createBitmap(squaredBitmap.width, squaredBitmap.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(roundedBitmap)
+        val paint = Paint()
+        paint.isAntiAlias = true
+        paint.shader = BitmapShader(squaredBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+        val rect = RectF(0f, 0f, squaredBitmap.width.toFloat(), squaredBitmap.height.toFloat())
+        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, paint)
+
+        return roundedBitmap
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        Log.d("on destryo view", placesClient.toString())
     }
 }

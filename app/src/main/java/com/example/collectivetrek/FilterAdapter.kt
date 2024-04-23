@@ -1,5 +1,8 @@
 package com.example.collectivetrek
 
+
+
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -28,7 +31,6 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
 
     class FilterItineraryViewHolder(var binding: ItineraryEventFilterBinding)
         : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(
             filter: Filter,
             clickListener: FilterItineraryListener
@@ -38,11 +40,13 @@ class FilterAdapter(val clickListener: FilterItineraryListener) :
             binding.executePendingBindings()
             binding.root.setOnClickListener {
                 clickListener.onClick(filter)
+                Log.d("clicked", itemView.toString())
 //                // TODO when the app opened, first filter should be selected
 //                // TODO when other filter is clicked, previous filtere should change colors
 //                binding.filterCard.setBackgroundResource(R.drawable.itinerary_filter_clicked)
-//                Log.d("Adapter","in clicklistner")
+
             }
+
         }
     }
 

@@ -1,7 +1,9 @@
 package com.example.collectivetrek.fragments
 
+
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
@@ -13,6 +15,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
+
+import androidx.appcompat.app.AppCompatActivity
+
 import com.example.collectivetrek.R
 
 

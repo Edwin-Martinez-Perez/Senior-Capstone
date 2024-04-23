@@ -1,83 +1,87 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.collectivetrek.databinding.LoginBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class LoginFragment : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
-    // Create a variable for the username and password
-    private var username: String? = null
-    private var password: String? = null
-
-
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    // Create variables
+    private lateinit var binding: LoginBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var currentUser: FirebaseUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout
-        val view = inflater.inflate(R.layout.login, container, false)
+        binding = LoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        // When focus is changed on username edit text
-        view.findViewById<EditText>(R.id.username_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as username
-                username = view.findViewById<EditText>(R.id.username_edit_text)?.text.toString()
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Get Firebase instance
+        auth = FirebaseAuth.getInstance()
+        binding.forgotPasswordTextView.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_resetPasswordFragment)
         }
-
-        // When focus is changed on password edit text
-        view.findViewById<EditText>(R.id.password_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as password
-                password = view.findViewById<EditText>(R.id.password_edit_text)?.text.toString()
-            }
+        // When login button is pushed, go to login function
+        binding.loginButton.setOnClickListener {
+            logIn()
         }
-
-        // Set onClickListener for the login button to lead to the group fragment
-        view.findViewById<View>(R.id.login_button)?.setOnClickListener{
-            findNavController().navigate(R.id.action_loginFragment_to_group)
-
-            // CHECK DATABASE TO SEE IF USERNAME AND PASSWORD MATCH
-
-        }
-
-        // Set onClickListener for the back button to lead to the welcome fragment
-        view.findViewById<View>(R.id.back_button)?.setOnClickListener{
+        // When back button is pushed, go to welcome fragment
+        binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_welcomeFragment)
         }
+    }
 
-        return view
+    private fun logIn(){
+        // Get variables
+        val emailTextInput = binding.emailEditText
+        val passwordTextInput = binding.passwordEditText
+
+        val emailEditText = emailTextInput.editText
+        val passwordEditText = passwordTextInput.editText
+
+        val email = emailEditText?.text.toString()
+        val password = passwordEditText?.text.toString()
+
+        // If any field is blank, send a toast message
+        if (email.isBlank() || password.isBlank()) {
+            Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithEmail:success")
+                    currentUser = auth.currentUser!!
+                    val action = LoginFragmentDirections.actionLoginFragmentToGroup(currentUser.toString())
+                    findNavController().navigate(action)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(
+                        context,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val TAG = "LoginFragment"
     }
 }

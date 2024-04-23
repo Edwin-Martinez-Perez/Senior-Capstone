@@ -2,18 +2,16 @@ package com.example.collectivetrek.fragments
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
-import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Filter
 import com.example.collectivetrek.databinding.FragmentAddFilterBinding
 
@@ -48,16 +46,20 @@ class AddFilterFragment : Fragment() {
 
         binding.addFilterAddButton.setOnClickListener {
             // retrieve filter from edit text and validate
-            val filterName = binding.addFilterFilterEditText.editText?.text.toString()
+            var filterName = binding.addFilterFilterEditText.editText?.text.toString()
             Log.d("add filter fragment",filterName)
             if (checkFilterName(filterName)) {
                 // store in database
+                filterName = filterName.replaceFirstChar { c->
+                    c.titlecase()
+                }
                 val filter = Filter(name=filterName)
                 addFilterToDatabase(filter)
                 itineraryViewModel.filterInsertionResult.observe(viewLifecycleOwner){ result ->
                     if (result){
                         // make Toast
                         Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+                        Log.d("add filter fragment", filter.id.toString())
                         itineraryViewModel.setFilter(filter)
                         Log.d("add filter fragment", itineraryViewModel.filter.value.toString())
                         // go back to itinerary page

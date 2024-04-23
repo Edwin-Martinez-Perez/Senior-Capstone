@@ -1,126 +1,119 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.collectivetrek.database.User
+import com.example.collectivetrek.databinding.RegisterBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterFragment : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
-    // Create variables
-    private var first_name: String? = null
-    private var last_name: String? = null
-    private var username: String? = null
-    private var email: String? = null
-    private var password: String? = null
-    private var reenter_password: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: RegisterBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout
-        val view = inflater.inflate(R.layout.register, container, false)
+    ): View {
+        binding = RegisterBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        // When focus is changed on first name edit text
-        view.findViewById<EditText>(R.id.add_first_name_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as first_name
-                first_name = view.findViewById<EditText>(R.id.add_first_name_edit_text)?.text.toString()
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get instance from Firebase
+        auth = FirebaseAuth.getInstance()
+
+        // Binding for register button
+        binding.registerButton.setOnClickListener {
+            signUp()
         }
 
-        // When focus is changed on last name edit text
-        view.findViewById<EditText>(R.id.add_last_name_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as last_name
-                last_name = view.findViewById<EditText>(R.id.add_last_name_edit_text)?.text.toString()
-            }
+        // Binding for the back button
+        binding.backButton.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
+        }
+    }
+
+    private fun signUp() {
+        // Create variables
+        val firstNameTextInput = binding.addFirstNameEditText
+        val lastNameTextInput = binding.addLastNameEditText
+        val emailTextInput = binding.addEmailEditText
+        val passwordTextInput = binding.addPasswordEditText
+
+        val firstNameEditText = firstNameTextInput.editText
+        val lastNameEditText = lastNameTextInput.editText
+        val emailEditText = emailTextInput.editText
+        val passwordEditText = passwordTextInput.editText
+
+        val firstName = firstNameEditText?.text.toString()
+        val lastName = lastNameEditText?.text.toString()
+        val email = emailEditText?.text.toString()
+        val password = passwordEditText?.text.toString()
+
+        // Make sure all fields are full
+        if (firstName.isBlank() || lastName.isBlank() || email.isBlank() || password.isBlank()) {
+            Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        // When focus is changed on username edit text
-        view.findViewById<EditText>(R.id.add_username_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as username
-                username = view.findViewById<EditText>(R.id.add_username_edit_text)?.text.toString()
-            }
-        }
-
-        // When focus is changed on email edit text
-        view.findViewById<EditText>(R.id.add_email_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as email
-                email = view.findViewById<EditText>(R.id.add_email_edit_text)?.text.toString()
-            }
-        }
-
-        // When focus is changed on password edit text
-        view.findViewById<EditText>(R.id.add_password_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save what the user wrote as password
-                password = view.findViewById<EditText>(R.id.add_password_edit_text)?.text.toString()
-            }
-        }
-
-        // When focus is changed on re-enter password edit text
-        view.findViewById<EditText>(R.id.add_reenter_password_edit_text)?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                // Save the re-entered password as a variable
-                val reenter_password =
-                    view.findViewById<EditText>(R.id.add_reenter_password_edit_text)?.text.toString()
-                // Check to see if the passwords do not match
-                if (password != reenter_password) {
-                    // Make a toast message to show that the passwords do not match
+        // Authentication for creating user with email and password
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    // Create variables and save information to user
+                    val user = auth.currentUser
+                    val userId = user?.uid
+                    val newUser = User(firstName, lastName, email)
+                    // Validate user ID
+                    if (userId != null) {
+                        // Get database reference
+                        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                        databaseReference.child(userId).setValue(newUser)
+                            .addOnSuccessListener {
+                                // Toast for when user registers
+                                Toast.makeText(context, "User registered!", Toast.LENGTH_SHORT)
+                                    .show()
+                                findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
+                            }
+                            .addOnFailureListener { exception ->
+                                // Toast if user cannot register
+                                Log.e(TAG, "Failed to add user data to database", exception)
+                                Toast.makeText(
+                                    context,
+                                    "Failed to register user",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    // If user is null
+                    } else {
+                        Log.e(TAG, "User UID is null")
+                        Toast.makeText(context, "Failed to register user", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } else {
+                    // User creation failed
+                    Log.e(TAG, "createUserWithEmailAndPassword:failure", task.exception)
                     Toast.makeText(
                         context,
-                        "Passwords do not match, please try again.",
+                        "Authentication failed: ${task.exception?.message}",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
-        }
-
-        // Set onClickListener for the register button to lead to the welcome fragment
-        view.findViewById<View>(R.id.register_button)?.setOnClickListener{
-            findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
-        }
-
-        // Set onClickListener for the back button to lead to the welcome fragment
-        view.findViewById<View>(R.id.back_button)?.setOnClickListener{
-            findNavController().navigate(R.id.action_registerFragment_to_welcomeFragment)
-        }
-
-        // email is the unique id, username does not need to be unique
-
-        return view
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val TAG = "RegisterFragment"
     }
 }
