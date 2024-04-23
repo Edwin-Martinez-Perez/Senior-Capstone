@@ -9,7 +9,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -20,27 +19,26 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.compose.ui.input.key.Key.Companion.I
-import androidx.databinding.DataBindingUtil.setContentView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.collectivetrek.EventAdapterCallback
 import com.example.collectivetrek.EventAdapter
 import com.example.collectivetrek.EventAdapterDeleteCallback
+import com.example.collectivetrek.EventAdapterCallback
 import com.example.collectivetrek.EventItineraryListener
-import com.example.collectivetrek.ItineraryViewModel
-import com.example.collectivetrek.R
-import com.example.collectivetrek.databinding.FragmentItineraryBinding
 import com.example.collectivetrek.FilterAdapter
 import com.example.collectivetrek.FilterItineraryListener
 import com.example.collectivetrek.ItineraryRepository
+import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
+import com.example.collectivetrek.databinding.FragmentItineraryBinding
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 import java.util.Date
@@ -331,7 +329,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
 
         with(builder){
             setPositiveButton("Done"){ dialog, which ->
-                //TODO modify database
+
                 val newEvent = Event(
                     placeName = place.editText?.text.toString(),
                     address = address.editText?.text.toString(),

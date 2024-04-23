@@ -1,11 +1,7 @@
 package com.example.collectivetrek
 
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 

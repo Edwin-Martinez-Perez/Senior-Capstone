@@ -12,8 +12,8 @@ import android.widget.ImageButton
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.collectivetrek.databinding.ItineraryEventItemBinding
 import com.example.collectivetrek.database.Event
+import com.example.collectivetrek.databinding.ItineraryEventItemBinding
 
 interface EventAdapterCallback {
     fun onAddressClick(address: String)

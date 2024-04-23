@@ -203,10 +203,10 @@ class AddEventFragment : Fragment() {
             return false
         }
         if (event.date!!.isNotEmpty()) {
-             if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
+            if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
                 binding.addEventDateTextInput.error = "Invalid date length."
                 return false
-             }
+            }
         } //TODO add else if to validate the date is during the trip
 
         if (event.note != null) {

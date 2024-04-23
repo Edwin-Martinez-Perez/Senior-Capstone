@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">CollectiveTrek</string>
     <string name="create_new_album">Create New Album</string>
+    <string name="upload_photo">Upload From Gallery</string>
     <string name="button1_text">+</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="itinerary">Itinerary</string>

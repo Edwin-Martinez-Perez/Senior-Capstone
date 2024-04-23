@@ -15,9 +15,6 @@
         <action
             android:id="@+id/action_welcomeFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_resetPasswordFragment"
-            app:destination="@id/resetPasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -30,6 +27,12 @@
         <action
             android:id="@+id/action_loginFragment_to_group"
             app:destination="@id/group" />
+        <action
+            android:id="@+id/action_loginFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -48,18 +51,6 @@
         <action
             android:id="@+id/action_resetPasswordFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
-        <action
-            android:id="@+id/action_resetPasswordFragment_to_resetPasswordWithLinkFragment"
-            app:destination="@id/resetPasswordWithLinkFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/resetPasswordWithLinkFragment"
-        android:name="com.example.collectivetrek.fragments.ResetPasswordWithLinkFragment"
-        android:label="reset_password_with_link"
-        tools:layout="@layout/reset_password_with_link" >
-        <action
-            android:id="@+id/action_resetPasswordWithLinkFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/group"
@@ -77,6 +68,22 @@
         <action
             android:id="@+id/action_group_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_group_self"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_group_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_group_to_photoUploadFragment"
+            app:destination="@id/photoUploadFragment" />
+        <action
+            android:id="@+id/action_group_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
@@ -106,19 +113,30 @@
     </fragment>
     <fragment
         android:id="@+id/itineraryFragment"
-        android:name="com.example.collectivetrek.fragments.ItineraryFragment"
+        android:name="com.example.collectivetrek.ItineraryFragment"
         android:label="ItineraryFragment" >
         <action
             android:id="@+id/action_itineraryFragment_to_addFilterFragment"
             app:destination="@id/addFilterFragment" />
         <action
             android:id="@+id/action_itineraryFragment_to_addEventFragment"
-            app:destination="@id/addEventFragment" >
-        </action>
+            app:destination="@id/addEventFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_photoUploadFragment"
+            app:destination="@id/photoUploadFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFilterFragment"
-        android:name="com.example.collectivetrek.fragments.AddFilterFragment"
+        android:name="com.example.collectivetrek.AddFilterFragment"
         android:label="AddFilterFragment" >
         <action
             android:id="@+id/action_addFilterFragment_to_itineraryFragment"
@@ -126,15 +144,81 @@
     </fragment>
     <fragment
         android:id="@+id/addEventFragment"
-        android:name="com.example.collectivetrek.fragments.AddEventFragment"
+        android:name="com.example.collectivetrek.AddEventFragment"
         android:label="fragment_add_filter"
         tools:layout="@layout/fragment_add_filter" >
         <action
             android:id="@+id/action_addEventFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_addEventFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
         <argument
-            android:name="groupId"
-            app:argType="string"
-            app:nullable="true" />
+             android:name="groupId"
+             app:argType="string"
+             app:nullable="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/photoUploadFragment"
+        android:name="com.example.collectivetrek.fragments.PhotoUploadFragment"
+        android:label="photo_upload"
+        tools:layout="@layout/photo_upload" >
+        <action
+            android:id="@+id/action_photoUploadFragment_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_photoUploadFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_photoUploadFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_photoUploadFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_photoUploadFragment_to_mapFragment2"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.collectivetrek.fragments.ProfileFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_profileFragment_to_photoUploadFragment"
+            app:destination="@id/photoUploadFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.collectivetrek.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_mapFragment_to_photoUploadFragment"
+            app:destination="@id/photoUploadFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_itineraryFragment"
+            app:destination="@id/itineraryFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_photoUploadFragment2"
+            app:destination="@id/photoUploadFragment" />
+    </fragment>
+
 </navigation>
