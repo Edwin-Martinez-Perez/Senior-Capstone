@@ -3,43 +3,32 @@ package com.example.collectivetrek.fragments
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Constraints
 import androidx.core.content.ContextCompat
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
-
-import com.example.collectivetrek.ItineraryViewModel
-
 import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.databinding.FragmentAddEventBinding
 import com.google.android.material.datepicker.MaterialDatePicker
-import java.util.*
-import kotlin.reflect.typeOf
+import java.util.Calendar
+import java.util.Date
 
 
 class AddEventFragment : Fragment() {
     private var _binding: FragmentAddEventBinding? = null
     private val binding get() = _binding!!
 
-
     private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
-
-    private val itineraryViewModel: ItineraryViewModel by activityViewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,13 +67,14 @@ class AddEventFragment : Fragment() {
             val address = binding.addEventAddressEditText.editText?.text.toString()
             var date = binding.addEventDateTextInput.editText?.text.toString()
             val note = binding.addEventNoteEditText.editText?.text.toString()
-            Log.d("add event date", date)
+
+
             val event = Event(placeName,address=address, date = date, note = note)
+
             // validation
             if (checkEventFields(event)){
                 // store in database
                 addEventToDataBase(event)
-
 
                 itineraryViewModel.dataInsertionResult.observe(viewLifecycleOwner){ result ->
                     if (result){
@@ -129,47 +119,10 @@ class AddEventFragment : Fragment() {
 
 
         if (event.date!!.isNotEmpty()) {
-             if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
-                // make Toast
-                Toast.makeText(context, "Event added.", Toast.LENGTH_LONG).show()
-                // go back to itinerary page
-                Log.d("add filter","add clicked")
-                navController.popBackStack()
-            }
-        }
-
-        binding.addEventCancelButton.setOnClickListener {
-            // make Toast
-            // go back to itinerary page
-            Log.d("add filter","cancel clicked")
-            //findNavController().popBackStack()
-            navController.popBackStack()
-        }
-    }
-
-    fun checkEventFields(event:Event) : Boolean {
-        if (event.placeName!!.isEmpty()) {
-            binding.addEventPlaceEditText.error = "Place name required."
-            return false
-        }
-        else if (event.placeName.length > 200) {
-            binding.addEventPlaceEditText.error = "Too long."
-            return false
-        }
-
-        if (event.address != null){
-            if (event.address!!.length > 400) {
-                binding.addEventPlaceEditText.error = "Too long."
-                return false
-            }
-        }
-
-
-        if (event.date!!.isNotEmpty()) {
-             if (event.date!!.length != 10 || event.date!!.length != 9) {
+            if (event.date!!.length != 10 && event.date!!.length != 9 && event.date!!.length != 8) {
                 binding.addEventDateTextInput.error = "Invalid date length."
                 return false
-             }
+            }
         } //TODO add else if to validate the date is during the trip
 
         if (event.note != null) {
@@ -183,9 +136,7 @@ class AddEventFragment : Fragment() {
     }
 
     private fun addEventToDataBase(event:Event) {
-
         Log.d("Add event to database", "called")
-
         itineraryViewModel.insertEvent(event)
     }
 
@@ -222,9 +173,7 @@ class AddEventFragment : Fragment() {
     // TODO change theme
     private fun showDate2() {
         val calendar = Calendar.getInstance()
-        val currentYear = calendar.get(Calendar.YEAR)
-        val currentMonth = calendar.get(Calendar.MONTH)
-        val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
+
         // Set up the MaterialDatePicker
         val builder = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select Date")

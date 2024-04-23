@@ -81,4 +81,6 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation ("com.google.firebase:firebase-auth-ktx:22.3.0")
+
 }

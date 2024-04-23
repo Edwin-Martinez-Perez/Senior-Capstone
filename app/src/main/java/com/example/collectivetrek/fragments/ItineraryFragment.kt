@@ -5,29 +5,26 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.collectivetrek.EventAdapterCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapter
+import com.example.collectivetrek.EventAdapterCallback
 import com.example.collectivetrek.EventItineraryListener
-import com.example.collectivetrek.ItineraryViewModel
-import com.example.collectivetrek.R
-import com.example.collectivetrek.databinding.FragmentItineraryBinding
 import com.example.collectivetrek.FilterAdapter
 import com.example.collectivetrek.FilterItineraryListener
 import com.example.collectivetrek.ItineraryRepository
+import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
+import com.example.collectivetrek.databinding.FragmentItineraryBinding
 import com.google.android.material.textfield.TextInputLayout
 
 /*
@@ -48,10 +45,10 @@ filterを消すときに、もしeventがそのfilterにあったら、ほんと
 //TODO when user open the itinerary for the first time (with the specific group id, show the first page),
 class ItineraryFragment : Fragment(), EventAdapterCallback {
 
-class ItineraryFragment : Fragment() {
-
     private var _binding: FragmentItineraryBinding? = null
     private val binding get() = _binding!!
+
+
     // private val itineraryViewModel: ItineraryViewModel by activityViewModels()
 
     private val itineraryViewModel: ItineraryViewModel by activityViewModels {
@@ -69,10 +66,7 @@ class ItineraryFragment : Fragment() {
         binding?.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = itineraryViewModel
-
             itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
-
-            itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext())
             eventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
         return binding.root
@@ -162,48 +156,9 @@ class ItineraryFragment : Fragment() {
                 }
             }
         }
-        val eventAdapter = EventAdapter(EventItineraryListener { event ->
-            itineraryViewModel.setEvent(event)
-            Log.d("DictionaryHome word obj","filter")
-        })
-
-//        binding?.dictionaryHomeFragment = this
-//        val adapter = DictionaryHomeAdapter(DictionaryHomeListener { word ->
-//            sharedViewModel.setWord(word)
-//            Log.d("DictionaryHome word obj",word.imageFileName.toString())
-//            //navigate to definition
-//            findNavController().navigate(R.id.action_dictionaryHomeFragment_to_wordDefinitionFragment)
-//        })
-//        binding.recyclerView.adapter = adapter
-
-        val filterAdapter = FilterAdapter(FilterItineraryListener { filter ->
-            itineraryViewModel.setFilter(filter)
-            Log.d("DictionaryHome word obj","filter")
-            // TODO
-            // when filter clicked, show the events with that filter
-        })
-
-        binding.itineraryFilterRecycler.adapter = filterAdapter
-        binding.eventsRecyclerView.adapter = eventAdapter
-
-        // TODO 1 when user created the group with dates for the first time, create filters based on the dates
-        // check db if theres any event, filter, if not,
-        // show the sample event in all and each filter
-
-        // show list of all events
-        itineraryViewModel.allEvents.observe(viewLifecycleOwner) { events ->
-            // Update the cached copy of the words in the adapter.
-            Log.d("Tag", "Number of events: ${events.size}")
-            events.let { eventAdapter.submitList(it) }
-        }
 
 
 
-        // show list of filtered events
-        itineraryViewModel.filteres.observe(viewLifecycleOwner) { filters ->
-            Log.d("Tag", "Number of events: ${filters.size}")
-            filters.let { filterAdapter.submitList(it) }
-        }
         //buttons
         binding.addEventButton.setOnClickListener {
             // go to add event fragment
@@ -259,7 +214,7 @@ class ItineraryFragment : Fragment() {
                 Log.d("dialog",address.editText?.text.toString())
                 Log.d("dialog",date.editText?.text.toString())
                 //itineraryViewModel.modifyEvent(eventId,Event(address = address.editText?.text.toString(),
-                    //placeName = place.editText?.text.toString(), date = date.editText?.text.toString()))
+                //placeName = place.editText?.text.toString(), date = date.editText?.text.toString()))
 
                 // TODO show the updated events
                 itineraryViewModel.setFilteredEvents()

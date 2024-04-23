@@ -12,245 +12,120 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ECFBFF"
-
         tools:context=".RegisterFragment">
 
-    <TextView
-        android:id="@+id/collective_trek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CollectiveTrek"
-        android:layout_marginTop="100dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#00AAD8"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="45dp"/>
+        <TextView
+            android:id="@+id/collective_trek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CollectiveTrek"
+            android:layout_marginTop="100dp"
+            android:fontFamily="@font/allerta"
+            android:textColor="#00AAD8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="45dp"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/center_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="186dp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/center_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="186dp" />
 
-    <TextView
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="25dp"
-        app:layout_constraintTop_toBottomOf="@+id/collective_trek"/>
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/allerta"
+            android:textColor="#000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="25dp"
+            app:layout_constraintTop_toBottomOf="@+id/collective_trek"/>
 
-    <TextView
-        android:id="@+id/add_first_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:layout_marginRight="10dp"
-        android:padding="7dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:text="First Name: "
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/register"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_email_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:minWidth="250dp"
+            android:hint="Email"
+            android:textColorHint="#44474f"
+            app:layout_constraintHeight_max="90dp"
+            app:layout_constraintWidth_max="250dp"
+            app:layout_constraintWidth_min="250dp"
+            app:boxBackgroundColor="#fefbff"
+            app:boxStrokeColor="#4b76c2"
+            app:boxStrokeWidth="2dp"
+            app:errorEnabled="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/register">
 
-    <EditText
-        android:id="@+id/add_first_name_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:background="@drawable/button"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_last_name"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/register" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="55dp"
+                />
 
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/add_last_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="7dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:text="Last Name: "
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_first_name"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/add_password_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="45dp"
+            android:minWidth="250dp"
+            android:hint="Password"
+            android:textColorHint="#44474f"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#000000"
+            app:layout_constraintHeight_max="90dp"
+            app:layout_constraintWidth_max="250dp"
+            app:layout_constraintWidth_min="250dp"
+            app:boxBackgroundColor="#fefbff"
+            app:boxStrokeColor="#4b76c2"
+            app:boxStrokeWidth="2dp"
+            app:errorEnabled="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_email_edit_text">
 
-    <EditText
-        android:id="@+id/add_last_name_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/allerta"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_username"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_first_name_edit_text" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="55dp"
+                />
 
-    <TextView
-        android:id="@+id/add_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="7dp"
-        android:text="Username: "
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_last_name"
-        />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/add_username_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/allerta"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_username"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_last_name_edit_text" />
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="45dp"
+            android:text="REGISTER"
+            android:textSize="20dp"
+            android:backgroundTint="#00AAD8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_password_edit_text"
+            android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/add_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="7dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        android:text="Email: "
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_username"
-        />
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:backgroundTint="#00AAD8"
+            android:layout_marginTop="27dp"
+            android:text="BACK"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/register_button" />
 
-    <EditText
-        android:id="@+id/add_email_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/allerta"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_email"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_username_edit_text" />
-
-    <TextView
-        android:id="@+id/add_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="7dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        android:text="Password: "
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_email"
-        />
-
-    <EditText
-        android:id="@+id/add_password_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/allerta"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_reenter_password"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_email_edit_text" />
-
-    <TextView
-        android:id="@+id/add_reenter_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="7dp"
-        android:fontFamily="@font/allerta"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        android:text="Re-Enter Password: "
-        app:layout_constraintEnd_toEndOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_password"
-        />
-
-    <EditText
-        android:id="@+id/add_reenter_password_edit_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/button"
-        android:fontFamily="@font/allerta"
-        android:hint="Enter here"
-        android:paddingLeft="12dp"
-        android:textColor="#000000"
-        android:textSize="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/add_reenter_password"
-        app:layout_constraintStart_toStartOf="@id/center_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/add_password_edit_text" />
-
-
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="45dp"
-        android:text="REGISTER"
-        android:textSize="20dp"
-        android:backgroundTint="#00AAD8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_reenter_password"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:backgroundTint="#00AAD8"
-        android:layout_marginTop="17dp"
-        android:text="BACK"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_button" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

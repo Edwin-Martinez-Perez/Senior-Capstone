@@ -1,18 +1,11 @@
 package com.example.collectivetrek.fragments
 
-import android.app.Activity
+import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultCallback
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 
 
