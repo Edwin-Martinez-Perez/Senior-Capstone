@@ -43,31 +43,7 @@ import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
 import java.util.Date
 
-/*
-‼️クリック時フィルターの色を変える (別のフィルターがクリックされたらそのフィルターを戻す)
-‼️Googleマップに飛ぶときに、パーミッションを取る (https://www.geeksforgeeks.org/how-to-get-current-location-in-android/)
-‼️datepickerの、dateを4/31とかないものを表示しないようにする
-‼️一番最初のデフォルトフィルターを作る！！
-(Friday)add eventのaddressを入力するときに、検索候補を表示する
-‼️エラーzzf - shutdown(),
-☑️eventsがない時のイラストを変える(サイズ、テキストも追加する)
-☑️fabの形を変える (Theme)
-☑️filterを消すボタンを作る(filterをaddするボタンの代わりに、編集ボタンを作って、addとdeleteができるようにする)
-☑️filterを消すときに、もしeventがそのfilterにあったら、ほんとに消していいか聞く
-☑️filter delete
-☑️filter delete dialog
-☑️delete menuを作る
-☑️2回目以降の画像が保存されない問題() -> viewmodel no results たちを、使い終わったら元に戻す
-☑️x y の値を変える bitmap
-☑️event cardviewのマックスサイズを指定する
-☑️event cardview: 画像をラウンド&&正方形にする、マージンをたす、noteとaddressの隙間をなくす
-☑️event cardview: サイズを内容に合わせて変える
-☑️画像をイベントに追加する
-☑️(Friday)safe args 送れるようにする
-☑️eventをスクローラブルにする
-☑️(Friday)フィルターがクリックされた時&アプリ起動時に、eventsがロードしない時がある。callbackがfalseを返す。それを直す。
-☑️Toastのデザインを変える
- */
+
 
 
 class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCallback {

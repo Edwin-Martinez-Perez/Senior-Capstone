@@ -95,8 +95,6 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:onClick="@{() -> itineraryFragment.openMap(eventData.address)}"
                 android:layout_marginTop="5dp"
-                android:textSize="12dp"
-                android:textColor="#001a40"
                 tools:text="123 W Sample Street, SA, United States"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"
                 app:layout_constraintTop_toBottomOf="@id/event_pin"/>

@@ -45,7 +45,11 @@ android {
 
     buildFeatures {
         dataBinding = true
+        viewBinding = true
+        //material3 test
+        //compose = true
         buildConfig = true
+
     }
 
     compileOptions {
