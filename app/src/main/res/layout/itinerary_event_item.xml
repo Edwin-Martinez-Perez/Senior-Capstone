@@ -75,7 +75,6 @@
                 android:textSize="20dp"
                 android:textColor="#001a40"
                 android:text="@{eventData.placeName}"
-                android:textColor="#001a40"
                 tools:text="Place Name"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -124,7 +123,6 @@
                 android:scrollbars="vertical"
                 app:layout_constraintTop_toBottomOf="@id/event_date_text"
                 app:layout_constraintStart_toStartOf="@id/place_name_text"/>
-                app:layout_constraintStart_toEndOf="@+id/event_pin"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
