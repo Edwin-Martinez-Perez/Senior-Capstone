@@ -5,21 +5,21 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#006abc"
     tools:context=".fragments.GalleryFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/create_new_album"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="272dp"
+        android:layout_marginTop="50dp"
         android:text="@string/create_new_album"
-        android:textColor="@color/textbody"
-        android:textSize="22dp"
+        android:fontFamily="@font/allerta"
+        android:textColor="#000000"
+        android:textSize="40dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -33,24 +33,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextTextPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="172dp"
-        android:layout_marginTop="322dp"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="369dp"
-        android:background="@drawable/add_event_text_backround_color"
-        android:hint="Album Name "
-        android:paddingLeft="12dp"
-        android:textSize="14dp"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.632"
+        android:minWidth="250dp"
+        android:hint="Album Name"
+        android:textColorHint="#44474f"
+        app:layout_constraintHeight_max="90dp"
+        app:layout_constraintWidth_max="250dp"
+        app:layout_constraintWidth_min="250dp"
+        app:boxBackgroundColor="#E1E1E1"
+        app:boxStrokeColor="#4b76c2"
+        app:boxStrokeWidth="2dp"
+        app:errorEnabled="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_new_album"
+        app:layout_constraintBottom_toTopOf="@id/galleryButton1">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="55dp"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

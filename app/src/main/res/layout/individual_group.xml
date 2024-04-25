@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:text="Group Name: "
                 android:textColor="@color/black"
-                android:textSize="26sp"
+                android:textSize="20dp"
+                android:fontFamily="@font/allerta"
                 android:textStyle="bold"/>
 
             <TextView
@@ -34,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Name"
+                android:fontFamily="@font/allerta"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -50,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:text="Destination: "
                 android:textColor="@color/black"
-                android:textSize="26sp"
+                android:textSize="20dp"
+                android:fontFamily="@font/allerta"
                 android:textStyle="bold"/>
 
             <TextView
@@ -59,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Destination"
+                android:fontFamily="@font/allerta"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
@@ -74,8 +78,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Date: "
+                android:fontFamily="@font/allerta"
                 android:textColor="@color/black"
-                android:textSize="26sp"
+                android:textSize="20dp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -84,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Date "
+                android:fontFamily="@font/allerta"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 

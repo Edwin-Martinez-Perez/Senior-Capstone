@@ -13,36 +13,35 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#eff0fa">
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/add_event_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Event"
-        android:layout_marginTop="30dp"
-        android:textColor="#001849"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:textSize="25dp"/>
+        <TextView
+            android:id="@+id/add_event_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/allerta"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="40dp"/>
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/addEvent_place_editText"
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:minWidth="250dp"
             android:maxHeight="55dp"
-            android:layout_marginTop="90dp"
             android:hint="Place name*"
+            android:layout_marginBottom="20dp"
             android:textColorHint="#44474f"
             app:layout_constraintHeight_max="90dp"
             app:layout_constraintWidth_max="250dp"
             app:layout_constraintWidth_min="250dp"
-            app:boxBackgroundColor="#fefbff"
+            app:boxBackgroundColor="#E1E1E1"
             app:boxStrokeColor="#4b76c2"
             app:boxStrokeWidth="2dp"
             app:errorTextColor="#ff5449"
@@ -52,7 +51,38 @@
             app:helperText="required"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_event_title">
+            app:layout_constraintBottom_toTopOf="@+id/addEvent_address_editText">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="55dp"
+                app:boxBackgroundColor="#E1E1E1"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEvent_address_editText"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:minWidth="250dp"
+            android:hint="Address"
+            android:textColorHint="#44474f"
+            app:layout_constraintHeight_max="90dp"
+            app:layout_constraintWidth_max="250dp"
+            app:layout_constraintWidth_min="250dp"
+            app:boxBackgroundColor="#E1E1E1"
+            app:boxStrokeColor="#4b76c2"
+            app:boxStrokeWidth="2dp"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error"
+            app:errorIconTint="@color/error"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/addEvent_date_TextInput">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -62,129 +92,98 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/addEvent_address_editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:minWidth="250dp"
-        android:hint="Address"
-        android:textColorHint="#44474f"
-        app:layout_constraintHeight_max="90dp"
-        app:layout_constraintWidth_max="250dp"
-        app:layout_constraintWidth_min="250dp"
-        app:boxBackgroundColor="#fefbff"
-        app:boxStrokeColor="#4b76c2"
-        app:boxStrokeWidth="2dp"
-        app:errorEnabled="true"
-        app:errorTextColor="@color/error"
-        app:errorIconTint="@color/error"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addEvent_place_editText">
-<!--        app:boxBackgroundColor="#edf0ff"-->
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEvent_date_TextInput"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="55dp"
-            />
+            android:minWidth="250dp"
+            android:hint="Date"
+            android:textColorHint="#44474f"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintHeight_max="90dp"
+            app:layout_constraintWidth_max="250dp"
+            app:layout_constraintWidth_min="250dp"
+            app:boxBackgroundColor="#E1E1E1"
+            app:boxStrokeColor="#4b76c2"
+            app:boxStrokeWidth="2dp"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error"
+            app:errorIconTint="@color/error"
+            app:boxStrokeErrorColor="@color/error"
+            app:helperTextEnabled="true"
+            app:helperText="mm/dd/yyyy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/addEvent_note_editText">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addEvent_date_EditText"
+                android:maxHeight="55dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:focusable="false"
+                />
 
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/addEvent_date_TextInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="250dp"
-        android:hint="Date"
-        android:textColorHint="#44474f"
-        app:layout_constraintHeight_max="90dp"
-        app:layout_constraintWidth_max="250dp"
-        app:layout_constraintWidth_min="250dp"
-        app:boxBackgroundColor="#fefbff"
-        app:boxStrokeColor="#4b76c2"
-        app:boxStrokeWidth="2dp"
-        app:errorEnabled="true"
-        app:errorTextColor="@color/error"
-        app:errorIconTint="@color/error"
-        app:boxStrokeErrorColor="@color/error"
-        app:helperTextEnabled="true"
-        app:helperText="mm/dd/yyyy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addEvent_address_editText">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/addEvent_date_EditText"
-            android:maxHeight="55dp"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addEvent_note_editText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:cursorVisible="false"
-            android:focusable="false"
-            />
+            android:layout_marginBottom="45dp"
+            app:layout_constraintHeight_max="120dp"
+            app:layout_constraintHeight_min="70dp"
+            app:layout_constraintWidth_max="250dp"
+            app:layout_constraintWidth_min="250dp"
+            android:hint="Note"
+            android:textColorHint="#44474f"
+            app:boxBackgroundColor="#E1E1E1"
+            app:boxStrokeColor="#4b76c2"
+            app:boxStrokeWidth="2dp"
+            app:errorEnabled="true"
+            app:errorIconTint="@color/error"
+            app:errorTextColor="@color/error"
+            app:boxStrokeErrorColor="@color/error"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/addEvent_add_button">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="120dp"
+                />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/addEvent_note_editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:layout_constraintHeight_max="120dp"
-        app:layout_constraintHeight_min="70dp"
-        app:layout_constraintWidth_max="250dp"
-        app:layout_constraintWidth_min="250dp"
-        android:hint="Note"
-        android:textColorHint="#44474f"
-        app:boxBackgroundColor="#fefbff"
-        app:boxStrokeColor="#4b76c2"
-        app:boxStrokeWidth="2dp"
-        app:errorEnabled="true"
-        app:errorIconTint="@color/error"
-        app:errorTextColor="@color/error"
-        app:boxStrokeErrorColor="@color/error"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addEvent_date_TextInput">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/addEvent_add_button"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:maxHeight="120dp"
-            />
+            android:layout_marginBottom="25dp"
+            android:text="ADD"
+            android:textSize="25dp"
+            android:backgroundTint="#1F4C67"
+            android:fontFamily="@font/allerta"
+            app:layout_constraintBottom_toTopOf="@id/addEvent_cancel_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-
-    <Button
-        android:id="@+id/addEvent_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginBottom="160dp"
-        android:text="ADD"
-        android:textSize="12dp"
-        android:textColor="#191e00"
-        android:backgroundTint="#daec7a"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <Button
-        android:id="@+id/addEvent_cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:layout_marginBottom="110dp"
-        android:text="CANCEL"
-        android:textSize="12dp"
-        android:textColor="#d7e2ff"
-        android:backgroundTint="#001a40"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/addEvent_cancel_button"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:text="CANCEL"
+            android:textSize="25dp"
+            android:backgroundTint="#1F4C67"
+            android:fontFamily="@font/allerta"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 
 

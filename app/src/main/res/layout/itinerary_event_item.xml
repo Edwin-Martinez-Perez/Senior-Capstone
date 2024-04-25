@@ -38,6 +38,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="3dp"
                 android:text="1"
+                android:fontFamily="@font/allerta"
                 android:gravity="center"
                 android:textColor="#ffffff"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +65,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
-
-
             <TextView
                 android:id="@+id/place_name_text"
                 android:layout_width="wrap_content"
@@ -74,8 +73,8 @@
                 android:maxWidth="300dp"
                 android:textSize="20dp"
                 android:textColor="#001a40"
+                android:fontFamily="@font/allerta"
                 android:text="@{eventData.placeName}"
-                android:textColor="#001a40"
                 tools:text="Place Name"
                 app:layout_constraintStart_toEndOf="@+id/event_pin"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -84,6 +83,7 @@
                 android:id="@+id/address_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/allerta"
                 android:layout_marginHorizontal="10dp"
                 android:maxWidth="250dp"
                 android:minHeight="0dp"
@@ -105,6 +105,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="0dp"
                 android:textSize="12dp"
+                android:fontFamily="@font/allerta"
                 android:textColor="#001a40"
                 android:text="@{eventData.date}"
                 tools:text="Jan 20, 2024"
@@ -118,13 +119,13 @@
                 android:maxHeight="70dp"
                 android:minHeight="0dp"
                 android:textSize="12dp"
+                android:fontFamily="@font/allerta"
                 android:textColor="#001a40"
                 android:text="@{eventData.note}"
                 tools:text="Add note here"
                 android:scrollbars="vertical"
                 app:layout_constraintTop_toBottomOf="@id/event_date_text"
                 app:layout_constraintStart_toStartOf="@id/place_name_text"/>
-                app:layout_constraintStart_toEndOf="@+id/event_pin"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
