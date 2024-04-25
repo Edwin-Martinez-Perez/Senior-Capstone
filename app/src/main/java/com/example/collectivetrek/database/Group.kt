@@ -1,9 +1,9 @@
 package com.example.collectivetrek.database
 
-import java.util.Date
 
 data class Group(
+    val groupID: String? = null,
     val groupName:String? = null,
-    val date: String? = null, //@Theresa, can you save starting and ending date of trip?
+    val date: String? = null,
     val destination: String? = null
 )

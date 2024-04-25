@@ -16,11 +16,17 @@ import kotlinx.coroutines.launch
 class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel() {
     // TODO
     // get group id from the group page before coming to itinerary page
-    val groupid = "ABCDEFID4"
+    //val groupid = "ABCDEFID4"
     //val groupid = "ABCDEFID3"
     //val groupid = "ABCDEFID2"
     //val groupid = "ABCDEFID1"
 
+    private var groupid  = ""
+
+    fun setGroupId(groupId: String){
+        groupid = groupId
+        //callback(true)
+    }
 
     private val _event = MutableLiveData<Event>()
     val event: LiveData<Event> = _event
@@ -84,6 +90,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun setFilters(groupId: String){
         Log.d("viewmodel","setFilters")
+        Log.d("viewmodel in setFilters",groupId)
         filters = repository.getFilters(groupId){ result ->
             Log.d("viewmodel",result.toString())
             _filterShownResult.postValue(result)

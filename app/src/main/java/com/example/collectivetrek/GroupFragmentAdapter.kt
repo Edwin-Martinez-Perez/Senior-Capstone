@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.collectivetrek.database.Group
+import com.example.collectivetrek.generated.callback.OnClickListener
 
-class MyAdapter(private val group : ArrayList<Group>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(val clickListener: GroupFragmentListener, private val group : ArrayList<Group>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -23,8 +24,10 @@ class MyAdapter(private val group : ArrayList<Group>) : RecyclerView.Adapter<MyA
         val current_item = group[position]
 
         holder.groupName.text = current_item.groupName
-        holder.date.text = current_item.destination
-        holder.destination.text = current_item.date
+        holder.date.text = current_item.date
+        holder.destination.text = current_item.destination
+
+        holder.bind(current_item, clickListener)
 
     }
 
@@ -40,6 +43,22 @@ class MyAdapter(private val group : ArrayList<Group>) : RecyclerView.Adapter<MyA
         val destination : TextView = itemView.findViewById(R.id.destination)
         val date : TextView = itemView.findViewById(R.id.date)
 
+        fun bind(
+            group: Group,
+            clickListener: GroupFragmentListener
+        ){
+            itemView.setOnClickListener{
+                clickListener.onClick(group)
+
+            }
+        }
+
+
     }
 
+}
+class GroupFragmentListener(val clickListener:(group: Group) -> Unit){
+    fun onClick(group:Group) {
+        clickListener(group)
+    }
 }
