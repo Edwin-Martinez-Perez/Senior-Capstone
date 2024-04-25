@@ -13,6 +13,7 @@ import com.example.collectivetrek.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
+
 class LoginFragment : Fragment() {
 
     // Create variables
@@ -84,4 +85,5 @@ class LoginFragment : Fragment() {
     companion object {
         private const val TAG = "LoginFragment"
     }
+
 }
