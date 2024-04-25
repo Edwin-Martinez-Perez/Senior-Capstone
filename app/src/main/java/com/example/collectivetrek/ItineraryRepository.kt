@@ -1,5 +1,6 @@
 package com.example.collectivetrek
 
+import android.R.id
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import com.example.collectivetrek.database.Filter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 
 class ItineraryRepository {
@@ -20,26 +22,11 @@ class ItineraryRepository {
 
 
 
-//    fun getAllEvents(groupId: String): LiveData<List<Event>> {
-//        val allEventsLiveData = MutableLiveData<List<Event>>()
-//        val eventReference = filterRef.child(tempGroupId)
-//        Log.d("all Events Repository", allEventsLiveData.toString())
-//        val filters = getFilters(tempGroupId){ result ->
-//            _eventShownResult.postValue(result)
-//        }
-//
-//
-//        return allEventsLiveData
-//    }
-
-
     //filterId: String, groupId: String
     fun getFilteredEvents(groupId: String, filterId: String, callback: (Boolean) -> Unit): LiveData<List<Event>> {
         Log.d("getFilteredEvents",filterId)
         val eventsLiveData = MutableLiveData<List<Event>>()
 
-        //TODO make sure the db structure and db path
-        //val filterReference = filterRef.child(tempGroupId).child(filterId).child("events")
         val filterReference = filterRef.child(groupId).child(filterId).child("events")
         val eventIdsList = mutableListOf<String>()
 
@@ -50,45 +37,52 @@ class ItineraryRepository {
                 for (eventIdSnapshot in dataSnapshot.children){
                     eventIdsList.add(eventIdSnapshot.key!!)
                 }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Handle errors here
-            }
-        })
 
 
-        eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val eventsList = mutableListOf<Event>()
-                Log.d("get filtered events Repository", dataSnapshot.children.joinToString())
+                eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val eventsList = mutableListOf<Event>()
+                        //Log.d("get filtered events Repository", dataSnapshot.children.joinToString())
 
-                for (eventSnapshot in dataSnapshot.children) {
-                    val eventId = eventSnapshot.key
+                        for (eventSnapshot in dataSnapshot.children) {
+                            val eventId = eventSnapshot.key
 
-                    if (eventId in eventIdsList) {
-                        val placeName = eventSnapshot.child("placeName").getValue(String::class.java)
-                        val date = eventSnapshot.child("date").getValue(String::class.java)
-                        val pinNum = eventSnapshot.child("pinNum").getValue(Int::class.java)
-                        val coordinates = eventSnapshot.child("coordinates").getValue(String::class.java)
-                        val address = eventSnapshot.child("address").getValue(String::class.java)
-                        val note = eventSnapshot.child("note").getValue(String::class.java)
+                            if (eventId in eventIdsList) {
+                                val placeName = eventSnapshot.child("placeName").getValue(String::class.java)
+                                val date = eventSnapshot.child("date").getValue(String::class.java)
+                                val pinNum = eventSnapshot.child("pinNum").getValue(Int::class.java)
+                                val coordinates = eventSnapshot.child("coordinates").getValue(String::class.java)
+                                val address = eventSnapshot.child("address").getValue(String::class.java)
+                                val note = eventSnapshot.child("note").getValue(String::class.java)
+                                val bitmap = eventSnapshot.child("bitmap").getValue(String::class.java)
 
-                        if (eventId != null) {
-                            val event = Event(placeName, date, pinNum, coordinates, address, note=note)
-                            eventsList.add(event)
+                                if (eventId != null) {
+                                    val event = Event(eventId=eventId,placeName=placeName, date = date, pinNum = pinNum, coordinates = coordinates, address = address, note=note, bitmap=bitmap)
+                                    eventsList.add(event)
+                                }
+                            }
+                        }
+
+                        Log.d("Itinerary Repository event is empty", eventsList.isNullOrEmpty().toString())
+                        eventsLiveData.value = eventsList
+                        if (eventIdsList.isNotEmpty()){
+                            callback(true)
+                        }
+                        else{
+                            callback(false)
                         }
                     }
-                }
 
-                Log.d("Itinerary Repository event", eventsList.toString())
-                eventsLiveData.value = eventsList
-                callback(true)
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        // Handle errors here
+                        callback(false)
+                    }
+
+                })
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 // Handle errors here
             }
-
         })
 
         return eventsLiveData
@@ -125,8 +119,10 @@ class ItineraryRepository {
 
                 filtersLiveData.value = filtersList
                 Log.d("getFilters livedata", filtersLiveData.value.toString())
-                if (filtersLiveData != null){
+                if (filtersList.isNotEmpty()){
                     callback(true)
+                } else{
+                    callback(false)
                 }
             }
 
@@ -155,7 +151,7 @@ class ItineraryRepository {
                 } else {
                     callback(false) // Callback indicating failure
                 }
-                Log.d("Repository insert event",event.placeName!!)
+                Log.d("Repository insert event","${event.placeName!!}")
             }.addOnFailureListener{err ->
                 Log.d("Repository insert event",err.toString())
             }
@@ -168,6 +164,7 @@ class ItineraryRepository {
     fun insertFilter(filter: Filter, groupId: String, callback: (Boolean) -> Unit) {
         //insert to firebase
         val filterId = filterRef.push().key!!
+        filter.id = filterId
 
         // TODO groupid should be shared across the pages within one group
         //filterRef.child(tempGroupId).child(filterId).setValue(filter)
@@ -186,12 +183,113 @@ class ItineraryRepository {
 
     }
 
-    fun deleteEvent(filter: Filter) {
-        //delete from firebase
+    fun modifyEvent(eventId: String, newEvent: Event, callback: (Boolean) -> Unit){
+        eventRef.child(eventId).setValue(newEvent)
+            .addOnCompleteListener{task ->
+                if (task.isSuccessful) {
+                    Log.d("Sucsess Repository modify event",newEvent.placeName.toString())
+                    callback(true) // Callback indicating success
+                } else {
+                    callback(false) // Callback indicating failure
+                }
+                Log.d("Repository modify event",newEvent.date.toString())
+            }.addOnFailureListener{err ->
+                Log.d("Repository modify event",err.toString())
+            }
     }
 
-    fun deleteFilter(filter: Filter) {
+    fun deleteEvent(eventId: String, groupId:String, filterId: String) {
         //delete from firebase
+        //from event
+        //from filter : find which filter the event is in, and delete
+        Log.d("deleteEvent", "${eventId+" "+groupId}")
+        val eventQuery: Query = eventRef.child(eventId)
+        val filterQuery: Query = filterRef.child(groupId).child(filterId).child("events")
+
+        Log.d("event Query", eventQuery.ref.toString())
+        Log.d("filter Query", filterQuery.ref.toString())
+
+        eventQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (eventSnapshot in dataSnapshot.children) {
+                    Log.d("deleting event", eventSnapshot.key.toString())
+                    eventSnapshot.ref.removeValue()
+                }
+                filterQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        for (filterSnapshot in dataSnapshot.children) {
+                            Log.d("deleting filter", filterSnapshot.toString())
+
+                            if (filterSnapshot.key == eventId){
+                                Log.d("event found", filterSnapshot.key.toString())
+                                Log.d("event found", filterSnapshot.ref.toString())
+                                filterSnapshot.ref.removeValue()
+                            }
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                        Log.d("TAG", "onCancelled", databaseError.toException())
+                    }
+                })
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("TAG", "onCancelled", databaseError.toException())
+            }
+        })
+
+    }
+
+    fun deleteFilter(filter: Filter, groupId:String, callback: (Boolean) -> Unit) {
+        //delete filter from firebase
+        val filterQuery: Query = filterRef.child(groupId).child(filter.id!!)
+        var eventIds = mutableListOf<String>()
+
+        filterQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (filterSnapshot in dataSnapshot.child("events").children) {
+                    Log.d("deleting filter  1", filterSnapshot.key.toString())
+//                    for (event in filterSnapshot.children){
+//                        Log.d("event id", event.key.toString())
+//                    }
+                    eventIds.add(filterSnapshot.key.toString())
+                }
+                //filterSnapshot.ref.removeValue()
+                Log.d("eventIds",eventIds.toString())
+                //delete event first
+                for (eventId in eventIds){
+                    Log.d("eventId being deleted",eventIds.toString())
+                    deleteEvent(eventId, groupId, filter.id!!)
+                }
+
+                //delete filter
+                for (filterSnapshot in dataSnapshot.children) {
+                    Log.d("deleting filter  2", filterSnapshot.ref.toString())
+                    filterSnapshot.ref.removeValue()
+                }
+
+                val idRef: DatabaseReference = filterRef.child(groupId).child(filter.id!!)
+
+                idRef.removeValue().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Data was successfully deleted
+                        println("Data successfully deleted for ID: $filter.id")
+                        Log.d("filter deletion", "before callback")
+                        callback(true)
+                    } else {
+                        // An error occurred during the delete operation
+                        println("Error deleting data for ID: $filter.id. ${task.exception?.message}")
+                    }
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("TAG", "onCancelled", databaseError.toException())
+                callback(false)
+            }
+        })
     }
 
 

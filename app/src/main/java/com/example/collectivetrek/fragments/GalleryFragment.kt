@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -22,6 +24,8 @@ class GalleryFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var button: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,7 +39,13 @@ class GalleryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_gallery, container, false)
+        val view = inflater.inflate(R.layout.fragment_gallery, container, false)
+
+
+        view.findViewById<Button>(R.id.galleryButton1)?.setOnClickListener{
+            findNavController().navigate(R.id.action_galleryFragment_to_photoUploadFragment23)
+        }
+        return view
     }
 
     companion object {

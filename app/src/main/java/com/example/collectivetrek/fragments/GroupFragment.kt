@@ -6,40 +6,93 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.collectivetrek.MyAdapter
 import com.example.collectivetrek.R
+import com.example.collectivetrek.database.Group
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class GroupFragment : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var dbref : DatabaseReference
+    private lateinit var userRecyclerview : RecyclerView
+    private lateinit var userArrayList : ArrayList<Group>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
-    override fun onCreateView(
+
+     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
+
     ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.group, container, false)
 
-        // SET CLICKERS TO GO TO DESTINATION
+
+         view.findViewById<View>(R.id.add_event_button)?.setOnClickListener{
+             findNavController().navigate(R.id.action_group_to_createGroup)
+         }
+
+         userRecyclerview = view.findViewById(R.id.events_recycler_view)
+         userRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+         userRecyclerview.setHasFixedSize(true)
+
+         userArrayList = arrayListOf()
+         getUserData()
 
         return view
     }
 
+
+    private fun getUserData() {
+
+        dbref = FirebaseDatabase.getInstance().getReference("groups")
+
+        dbref.addValueEventListener(object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                if (snapshot.exists()) {
+
+                    for (userSnapshot in snapshot.children) {
+
+
+                        val groups = userSnapshot.getValue(Group::class.java)
+                        userArrayList.add(groups!!)
+
+                    }
+
+                    userRecyclerview.adapter = MyAdapter(userArrayList)
+
+
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+    }
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            GroupFragment().apply {
+            LoginFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
