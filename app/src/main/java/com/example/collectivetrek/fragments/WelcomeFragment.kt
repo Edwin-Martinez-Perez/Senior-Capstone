@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.collectivetrek.BottomNavProvider
 import com.example.collectivetrek.R
 import com.example.collectivetrek.databinding.WelcomePageBinding
 import com.example.collectivetrek.MainActivity

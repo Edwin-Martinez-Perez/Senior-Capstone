@@ -12,7 +12,6 @@ import com.example.collectivetrek.R
 import com.example.collectivetrek.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.example.collectivetrek.BottomNavProvider
 
 
 class LoginFragment : Fragment() {
