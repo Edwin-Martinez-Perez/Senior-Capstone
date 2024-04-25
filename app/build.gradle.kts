@@ -26,7 +26,8 @@ android {
 
         //TODO change to be safe
         //for Places API
-        buildConfigField("String", "PLACES_API_KEY", "AIzaSyCIozrnAqwwZP3U7iywRMmUDwDW9c0EHiU")
+        buildConfigField("String", "PLACES_API_KEY","AIzaSyCQT9To_QJz4g3D4C5KDUFjv8i77NM0PYw")
+
     }
 
     buildTypes {
@@ -80,6 +81,7 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -92,4 +94,20 @@ dependencies {
 
     //Place SDK
     implementation("com.google.android.libraries.places:places:3.3.0")
+}
+
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "app/secrets.properties"
+
+    //TODO
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "app/local.defaults.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
 }

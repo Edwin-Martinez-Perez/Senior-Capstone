@@ -43,7 +43,7 @@ class GalleryFragment : Fragment() {
 
 
         view.findViewById<Button>(R.id.galleryButton1)?.setOnClickListener{
-            findNavController().navigate(R.id.action_galleryFragment_to_photoUploadFragment23)
+            findNavController().navigate(R.id.action_galleryFragment_to_photoUploadFragment)
         }
         return view
     }
