@@ -7,34 +7,65 @@
     tools:context=".fragments.PhotoUploadFragment">
 
     <Button
-        android:id="@+id/button2"
-        android:layout_width="413dp"
-        android:layout_height="80dp"
+        android:id="@+id/uploadButton"
+        android:layout_width="300dp"
         android:text="@string/upload_photo"
-        tools:layout_editor_absoluteX="-1dp"
-        tools:layout_editor_absoluteY="653dp" />
+        android:textSize="25sp"
+        android:backgroundTint="#1F4C67"
+        android:fontFamily="@font/allerta"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"/>
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="407dp"
+        android:id="@+id/imageView1"
+        android:layout_width="413dp"
         android:layout_height="107dp"
-        app:srcCompat="@android:drawable/sym_def_app_icon"
-        tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="3dp" />
+        android:layout_marginBottom="624dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
+        android:id="@+id/prevButton"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="360dp" />
+        android:layout_marginStart="15dp"
+        android:textSize="15sp"
+        android:backgroundTint="#1F4C67"
+        android:fontFamily="@font/allerta"
+        android:text="Previous"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/uploadButton"/>
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/nextButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:textSize="15sp"
+        android:backgroundTint="#1F4C67"
+        android:fontFamily="@font/allerta"
+        android:text="Next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/uploadButton"/>
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="312dp"
-        tools:layout_editor_absoluteY="362dp" />
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="178dp"
+        android:layout_marginBottom="562dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
