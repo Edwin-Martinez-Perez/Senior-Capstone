@@ -134,9 +134,8 @@
             android:id="@+id/action_itineraryFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
         <argument
-            android:name="userID"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/addFilterFragment"

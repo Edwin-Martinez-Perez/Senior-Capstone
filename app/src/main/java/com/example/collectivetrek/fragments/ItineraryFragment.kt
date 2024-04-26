@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapter
 import com.example.collectivetrek.EventAdapterDeleteCallback
@@ -56,7 +57,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
-
+    val args: ItineraryFragmentArgs by navArgs()
 
 
     override fun onCreateView(
@@ -72,21 +73,25 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
             eventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
+        itineraryViewModel.setGroupId(args.groupId)
+
         return binding.root
     }
+
+//    init {
+//        itineraryViewModel.setGroupId(args.groupId)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.itineraryFragment = this
-
-        Log.d("filter id", itineraryViewModel.filter.value?.id.toString())
+        val groupId = args.groupId
 
         val eventAdapter = EventAdapter(EventItineraryListener { event ->
             itineraryViewModel.setEvent(event)
 
-            // TODO get event id somehow
+            // get event id somehow
             val eventId = event.eventId!!
-            //val eventId = "-NuUsqrTkBUKVui5XSmg"
 
             //TODO makes a event editable
             showEditEventDialog(eventId)
@@ -107,7 +112,6 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
 
             itineraryViewModel.filteredEvents.observe(viewLifecycleOwner) { events ->
                 if (events.isEmpty()){
-                    // TODO Change illustration on the screen and say "create an event!" or something
                     // Show image when there is no event available under the filter
                     binding.itineraryImage.visibility = View.VISIBLE
                     Log.d("Tag", "event is empty")
@@ -123,19 +127,14 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         binding.itineraryFilterRecycler.adapter = filterAdapter
 
 
-
-
-        //val groupId = "ABCDEFID3"
-        val groupId = "ABCDEFID4"
-        //itineraryViewModel.setFilters(groupId = "ABCDEFID1") //TODO change to groupid
-        //itineraryViewModel.setFilters(groupId = "ABCDEFID2") //TODO change to groupid
-        itineraryViewModel.setFilters(groupId = groupId) //TODO change to groupid
+        itineraryViewModel.setFilters(groupId = groupId)
 
         // show list of filtered events
         itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
             Log.d("Tag", "Number of filters: ${filters.size}")
 
             if (filters.isEmpty()){
+                binding.deleteFilter.visibility = View.GONE
                 // TODO create filter each for each date
                 // TODO 1 when user created the group with dates for the first time, create filters based on the dates
                 val filter = Filter(name = "Add Filter")
@@ -147,6 +146,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                 binding.itineraryImage.visibility = View.VISIBLE
 
             } else {
+                binding.deleteFilter.visibility = View.VISIBLE
                 filters.let { filterAdapter.submitList(it) }
             }
         }
@@ -156,12 +156,14 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                 // filter shown success
                 Log.d("callback","filter shown success")
                 Log.d("filtered events null",(itineraryViewModel.filteredEvents.value.isNullOrEmpty()).toString())
-                if (itineraryViewModel.filter.value?.id.isNullOrEmpty() && itineraryViewModel.filters.value!!.isNotEmpty()){ //TODO check this condition
+
+                if (itineraryViewModel.filter.value?.id.isNullOrEmpty() && !itineraryViewModel.filters.value.isNullOrEmpty()){ //TODO check this condition
                     // show the events in the first filter when there is no filter selected
                     itineraryViewModel.setFilter(itineraryViewModel.filters.value!![0])
                     binding.filterName.setText(itineraryViewModel.filters.value!![0].name)
                 }else{
-                    binding.filterName.setText(itineraryViewModel.filter.value!!.name)
+                    Log.d("filter name", itineraryViewModel.filter.value?.name.toString())
+                    binding.filterName.setText(itineraryViewModel.filter.value?.name)
                 }
                 itineraryViewModel.setFilteredEvents()
 
@@ -195,7 +197,6 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                 //
                 Log.d("filter result false", result.toString())
                 binding.itineraryImage.visibility = View.VISIBLE
-                binding.addEventButton.visibility = View.GONE
             }
         }
 
@@ -203,20 +204,30 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
 
         //buttons
         binding.addEventButton.setOnClickListener {
-             //go to add event fragment
-            //findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
+            //go to add event fragment
+//
+//            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId)
+//
+//
+////            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = "ABCDEFID1")
+//            findNavController().navigate(action)
+            if (itineraryViewModel.filters.value.isNullOrEmpty()){
+                Log.d("addEventButton clicked", itineraryViewModel.filters.value.isNullOrEmpty().toString())
+                val addFilterMenu = showAddFilterMenu(binding.addEventButton)
 
-            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment("ABCDEFID1")
+                addFilterMenu.show()
+            } else {
+                Log.d("addEventButton clicked", itineraryViewModel.filters.value.isNullOrEmpty().toString())
+                val addMenu = showAddMenu(binding.addEventButton, groupId)
 
-
-//            val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = "ABCDEFID1")
-            findNavController().navigate(action)
+                addMenu.show()
+            }
         }
 
-        binding.addFilterButton.setOnClickListener {
-            // go to add filter fragment
-            findNavController().navigate(R.id.action_itineraryFragment_to_addFilterFragment)
-        }
+//        binding.addFilterButton.setOnClickListener {
+//            // go to add filter fragment
+//            findNavController().navigate(R.id.action_itineraryFragment_to_addFilterFragment)
+//        }
 
         binding.deleteFilter.setOnClickListener {
 
@@ -232,7 +243,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                     // delete Filter and all the events under that
                     itineraryViewModel.deleteFilter(itineraryViewModel.getFilter())
 
-                    //TODO refresh filters
+                    //refresh filters
                     itineraryViewModel.filterDeletionResult.observe(viewLifecycleOwner){result->
                         if(result){
                             Log.d("filter deletion result", result.toString())
@@ -245,10 +256,16 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
 
                                     placeHolderFilter.let { filterAdapter.submitList(it) }
 
+                                    binding.filterName.setText("")
+
                                     binding.itineraryImage.visibility = View.VISIBLE
+                                    binding.deleteFilter.visibility = View.GONE
+
 
                                 } else {
                                     itineraryViewModel.setFilter(filters[0])
+                                    binding.deleteFilter.visibility = View.VISIBLE
+                                    binding.addEventButton.visibility = View.VISIBLE
                                     filters.let { filterAdapter.submitList(it) }
                                 }
                             }
@@ -398,6 +415,64 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         // Show the MaterialDatePicker
         materialDatePicker.show(requireActivity().supportFragmentManager, "DATE_PICKER")
         // TODO change the color of positive and negative button
+    }
+
+    private fun showAddMenu(addButton: ImageButton, groupId: String):PopupMenu{
+        val popupMenu = PopupMenu(requireContext(), addButton)
+
+        // Inflate the menu from XML
+        popupMenu.menuInflater.inflate(R.menu.add_menu, popupMenu.menu)
+
+        // Set a click listener for menu items
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.add_event -> {
+                    // Handle Popup Item 1 click
+                    val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = groupId)
+                    findNavController().navigate(action)
+
+                    true
+                }
+                R.id.add_filter -> {
+                    // Handle Popup Item 1 click
+                    findNavController().navigate(R.id.action_itineraryFragment_to_addFilterFragment)
+
+                    true
+                }
+                R.id.add_cancel -> {
+                    // Handle Popup Item 2 click
+                    true
+                }
+                else -> false
+            }
+        }
+        return popupMenu
+    }
+
+    private fun showAddFilterMenu(addButton: ImageButton):PopupMenu{
+        val popupMenu = PopupMenu(requireContext(), addButton)
+
+        // Inflate the menu from XML
+        popupMenu.menuInflater.inflate(R.menu.add_filter_menu, popupMenu.menu)
+
+        // Set a click listener for menu items
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.addFilter_filter -> {
+                    // Handle Popup Item 1 click
+                    findNavController().navigate(R.id.action_itineraryFragment_to_addFilterFragment)
+
+                    true
+                }
+                R.id.addFilter_cancel -> {
+                    // Handle Popup Item 2 click
+                    true
+                }
+                else -> false
+            }
+        }
+
+        return popupMenu
     }
 
     override fun onDestroyView() {

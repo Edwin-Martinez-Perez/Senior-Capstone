@@ -26,8 +26,7 @@ android {
 
         //TODO change to be safe
         //for Places API
-        buildConfigField("String", "PLACES_API_KEY","AIzaSyCQT9To_QJz4g3D4C5KDUFjv8i77NM0PYw")
-
+        buildConfigField("String", "PLACES_API_KEY", "AIzaSyCIozrnAqwwZP3U7iywRMmUDwDW9c0EHiU")
     }
 
     buildTypes {
@@ -50,7 +49,6 @@ android {
         //material3 test
         //compose = true
         buildConfig = true
-
     }
 
     compileOptions {
@@ -94,8 +92,10 @@ dependencies {
 
     //Place SDK
     implementation("com.google.android.libraries.places:places:3.3.0")
+
 }
 
+//for API key
 secrets {
     // Optionally specify a different file name containing your secrets.
     // The plugin defaults to "local.properties"

@@ -40,7 +40,7 @@ class CreateGroupFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
 
-    ): View? {
+        ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.create_group, container, false)
 
@@ -65,8 +65,13 @@ class CreateGroupFragment : Fragment() {
             val date = date.text.toString()
             val groupName = createGroupName.text.toString()
 
+            val database = Firebase.database
+            val groupsRef = database.getReference("groups")
+            val groupID = groupsRef.push().key.toString()
+
+
             // Upload data to Firebase
-            uploadGroupToFirebase(destination, date, groupName)
+            uploadGroupToFirebase(destination, date, groupName, groupID)
 
             findNavController().navigate(R.id.action_createGroup_to_group)
         }
@@ -77,16 +82,17 @@ class CreateGroupFragment : Fragment() {
 
         return view
     }
-    private fun uploadGroupToFirebase(destination: String, date: String, groupName: String) {
+    private fun uploadGroupToFirebase(destination: String, date: String, groupName: String, groupId: String) {
         val database = Firebase.database
         val groupsRef = database.getReference("groups")
 
-        val groupId = groupsRef.push().key
+        //val groupId = groupsRef.push().key
         if (groupId != null) {
             val groupData = mapOf(
                 "destination" to destination,
                 "date" to date,
-                "groupName" to groupName
+                "groupName" to groupName,
+                "groupID" to groupId
             )
             groupsRef.child(groupId).setValue(groupData)
                 .addOnSuccessListener {

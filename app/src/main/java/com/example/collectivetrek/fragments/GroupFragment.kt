@@ -1,6 +1,7 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.collectivetrek.GroupFragmentListener
 import com.example.collectivetrek.MyAdapter
 import com.example.collectivetrek.R
 import com.example.collectivetrek.database.Group
@@ -28,25 +30,25 @@ class GroupFragment : Fragment() {
 
 
 
-     override fun onCreateView(
+    override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
 
-    ): View? {
+        ): View? {
         // Inflate the layout
         val view = inflater.inflate(R.layout.group, container, false)
 
 
-         view.findViewById<View>(R.id.add_event_button)?.setOnClickListener{
-             findNavController().navigate(R.id.action_group_to_createGroup)
-         }
+        view.findViewById<View>(R.id.add_event_button)?.setOnClickListener{
+            findNavController().navigate(R.id.action_group_to_createGroup)
+        }
 
-         userRecyclerview = view.findViewById(R.id.events_recycler_view)
-         userRecyclerview.layoutManager = LinearLayoutManager(requireContext())
-         userRecyclerview.setHasFixedSize(true)
+        userRecyclerview = view.findViewById(R.id.events_recycler_view)
+        userRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+        userRecyclerview.setHasFixedSize(true)
 
-         userArrayList = arrayListOf()
-         getUserData()
+        userArrayList = arrayListOf()
+        getUserData()
 
         return view
     }
@@ -70,7 +72,12 @@ class GroupFragment : Fragment() {
 
                     }
 
-                    userRecyclerview.adapter = MyAdapter(userArrayList)
+                    userRecyclerview.adapter = MyAdapter(GroupFragmentListener {group ->
+                        Log.d("group", "group id${group.groupID} , groupName ${group.groupName}")
+                        val action = GroupFragmentDirections.actionGroupToItineraryFragment(group.groupID!!)
+                        findNavController().navigate(action) }, userArrayList)
+
+
 
 
                 }
