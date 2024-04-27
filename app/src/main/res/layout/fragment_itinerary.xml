@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/trash_can_delete_64px_icon"
-            android:backgroundTint="#eff0fa"
+            android:backgroundTint="#ffff"
             android:layout_marginEnd="5dp"
             app:layout_constraintTop_toBottomOf="@id/itinerary_filter_recycler"
             app:layout_constraintBottom_toTopOf="@id/events_recycler_view"

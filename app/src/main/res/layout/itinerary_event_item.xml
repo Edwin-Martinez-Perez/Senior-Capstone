@@ -37,7 +37,6 @@
                 android:background="@drawable/pin_circle"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="3dp"
-                android:text="1"
                 android:fontFamily="@font/allerta"
                 android:gravity="center"
                 android:textColor="#ffffff"
@@ -51,8 +50,8 @@
                 android:maxWidth="100dp"
                 android:maxHeight="100dp"
                 android:layout_marginEnd="15dp"
-                app:layout_constraintEnd_toStartOf="@id/delete_button"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/delete_button"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageButton
@@ -70,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:maxWidth="300dp"
+                android:maxWidth="180dp"
                 android:textSize="20dp"
                 android:textColor="#001a40"
                 android:fontFamily="@font/allerta"
@@ -85,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/allerta"
                 android:layout_marginHorizontal="10dp"
-                android:maxWidth="250dp"
+                android:maxWidth="200dp"
                 android:minHeight="0dp"
                 android:textSize="18dp"
                 android:textColor="#001a40"

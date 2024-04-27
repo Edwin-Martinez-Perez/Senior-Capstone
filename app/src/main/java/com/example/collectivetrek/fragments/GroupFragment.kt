@@ -6,12 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.collectivetrek.GroupFragmentListener
 import com.example.collectivetrek.MyAdapter
 import com.example.collectivetrek.R
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Group
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,6 +30,7 @@ class GroupFragment : Fragment() {
     private lateinit var userRecyclerview : RecyclerView
     private lateinit var userArrayList : ArrayList<Group>
 
+    private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
 
 
     override fun onCreateView(
@@ -54,7 +57,7 @@ class GroupFragment : Fragment() {
     }
 
 
-    private fun getUserData() {
+    private fun getUserData(){
 
         dbref = FirebaseDatabase.getInstance().getReference("groups")
 
@@ -73,12 +76,14 @@ class GroupFragment : Fragment() {
                     }
 
                     userRecyclerview.adapter = MyAdapter(GroupFragmentListener {group ->
-                        Log.d("group", "group id${group.groupID} , groupName ${group.groupName}")
-                        val action = GroupFragmentDirections.actionGroupToItineraryFragment(group.groupID!!)
-                        findNavController().navigate(action) }, userArrayList)
-
-
-
+                        Log.d("groupId", "${group.groupID}, ${group.groupName}")
+                        groupIdViewModel.setGroupId(group.groupID!!)
+                        groupIdViewModel.groupIdSetResult.observe(viewLifecycleOwner){result->
+                            if (result){
+                                findNavController().navigate(R.id.action_group_to_itineraryFragment)
+                            }
+                        }
+                        Log.d("group", "group id${groupIdViewModel.sharedGroupId.value.toString()} , groupName ${group.groupName}") }, userArrayList)
 
                 }
 
@@ -88,13 +93,10 @@ class GroupFragment : Fragment() {
                 TODO("Not yet implemented")
             }
         })
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
     }
     companion object {
         @JvmStatic
