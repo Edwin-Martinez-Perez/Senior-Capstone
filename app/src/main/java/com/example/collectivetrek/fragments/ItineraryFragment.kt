@@ -7,21 +7,14 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageAndVideo.equals
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapter
 import com.example.collectivetrek.EventAdapterDeleteCallback
@@ -126,39 +119,6 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         })
         binding.itineraryFilterRecycler.adapter = filterAdapter
 
-//        groupIdViewModel.sharedGroupId.observe(viewLifecycleOwner) { newGroupId ->
-//            Log.d("observed groupid", newGroupId)
-//            // Handle the new groupId here
-//            itineraryViewModel.setGroupId(newGroupId)
-//            itineraryViewModel.groupIdSetResult.observe(viewLifecycleOwner){result ->
-//                Log.d("getGrpoupId",itineraryViewModel.getGroupId())
-//                if (result){
-//                    Log.d("groupIdSetResult", result.toString())
-//                    Log.d("groupIdSetREsult", itineraryViewModel.filters.value.toString())
-//                    itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
-//                        Log.d("Tag", "Number of filters: ${filters.size}")
-//
-//                        if (filters.isEmpty()){
-//                            binding.deleteFilter.visibility = View.GONE
-//                            // TODO create filter each for each date
-//                            // TODO 1 when user created the group with dates for the first time, create filters based on the dates
-//                            val filter = Filter(name = "Add Filter")
-//                            val placeHolderFilter = mutableListOf<Filter>()
-//                            placeHolderFilter.add(filter)
-//
-//                            placeHolderFilter.let { filterAdapter.submitList(it) }
-//
-//                            binding.itineraryImage.visibility = View.VISIBLE
-//
-//                        } else {
-//                            binding.deleteFilter.visibility = View.VISIBLE
-//                            filters.let { filterAdapter.submitList(it) }
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }
 
         Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
         groupIdViewModel.sharedGroupId.observe(viewLifecycleOwner){groupId->
@@ -191,28 +151,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             }
         }
 
-        // TODO wait until groupId is set
-        // show list of filtered events
-//        itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
-//            Log.d("Tag", "Number of filters: ${filters.size}")
-//
-//            if (filters.isEmpty()){
-//                binding.deleteFilter.visibility = View.GONE
-//                // TODO create filter each for each date
-//                // TODO 1 when user created the group with dates for the first time, create filters based on the dates
-//                val filter = Filter(name = "Add Filter")
-//                val placeHolderFilter = mutableListOf<Filter>()
-//                placeHolderFilter.add(filter)
-//
-//                placeHolderFilter.let { filterAdapter.submitList(it) }
-//
-//                binding.itineraryImage.visibility = View.VISIBLE
-//
-//            } else {
-//                binding.deleteFilter.visibility = View.VISIBLE
-//                filters.let { filterAdapter.submitList(it) }
-//            }
-//        }
+
 
         itineraryViewModel.filterShownResult.observe(viewLifecycleOwner){ result ->
             if (result){
