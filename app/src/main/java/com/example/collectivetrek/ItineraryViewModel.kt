@@ -2,16 +2,17 @@ package com.example.collectivetrek
 
 import android.net.Uri
 import android.util.Log
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel() {
     // TODO
@@ -21,11 +22,15 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     //val groupid = "ABCDEFID2"
     //val groupid = "ABCDEFID1"
 
-    private var groupid  = ""
 
-    fun setGroupId(groupId: String){
-        groupid = groupId
-        //callback(true)
+    private val _groupId = MutableLiveData<String>()
+    val groupId: LiveData<String>
+        get() = _groupId
+
+    fun setGroupId(newGroupId: String) {
+        Log.d("newGroupId", newGroupId)
+        _groupId.value = newGroupId
+        _groupIdSetResult.postValue(true)
     }
 
     private val _event = MutableLiveData<Event>()
@@ -34,21 +39,12 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     private val _filter = MutableLiveData<Filter>()
     val filter: LiveData<Filter> = _filter
 
-    //live data for events
-    //retrieve all the events from the group that user is currently in
-    //TODO create function in repository to retrieve all the data
-    val allEvents: LiveData<List<Event>> = repository.getFilteredEvents(groupid, filter.value?.id.toString()) {result->
-        _filteredEventsShownResult.postValue(result)
-    }
-
-    var filters: LiveData<List<Filter>> = repository.getFilters(groupid){ result ->
-        Log.d("filteres result", result.toString())
+    var filters: LiveData<List<Filter>> = repository.getFilters(groupId.value.toString()){ result ->
         _filterShownResult.postValue(result)
     }
 
 
-    //var filteredEvents: LiveData<List<Event>> = repository.getFilteredEvents("groupid",filterId.toString())
-    var filteredEvents: LiveData<List<Event>> = repository.getFilteredEvents(groupid,filter.value?.id.toString()){ result->
+    var filteredEvents: LiveData<List<Event>> = repository.getFilteredEvents(groupId.value.toString(),filter.value?.id.toString()){ result->
         _filteredEventsShownResult.postValue(result)
 
     }
@@ -72,6 +68,9 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     private val _filterDeletionResult = MutableLiveData<Boolean>()
     val filterDeletionResult: LiveData<Boolean> get() = _filterDeletionResult
+
+    private val _groupIdSetResult = MutableLiveData<Boolean>()
+    val groupIdSetResult: LiveData<Boolean> get() = _groupIdSetResult
 
     fun setDataInsertionResultFalse(){
         _dataInsertionResult.postValue(false)
@@ -99,7 +98,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun setFilteredEvents(){
         Log.d("set filter viewmodel",filter.value?.id.toString())
-        filteredEvents = repository.getFilteredEvents(groupid,filter.value?.id.toString()){result->
+        filteredEvents = repository.getFilteredEvents(groupId.value.toString(),filter.value?.id.toString()){result->
             _filteredEventsShownResult.postValue(result)
         }
     }
@@ -115,7 +114,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun insertEvent(event: Event) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("insertEvent in viewmodel",filter.value?.id.toString())
-        repository.insertEvent(filter.value?.id.toString(),event, groupid){ result ->
+        repository.insertEvent(filter.value?.id.toString(),event, groupId.value.toString()){ result ->
             _dataInsertionResult.postValue(result)
         }
         Log.d("after insertEvent in viewmodel",dataInsertionResult.value.toString())
@@ -130,7 +129,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun insertFilter(filter: Filter)= viewModelScope.launch(Dispatchers.IO)  {
         Log.d("insertFilter in viewmodel",filter.name.toString())
-        repository.insertFilter(filter,groupid){result ->
+        repository.insertFilter(filter,groupId.value.toString()){result ->
             _filterInsertionResult.postValue(result)
 
         }
@@ -143,11 +142,11 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     // fun delete event
     fun deleteEvent(event: Event) {
-        repository.deleteEvent(event.eventId!!,groupid,filter.value?.id.toString())
+        repository.deleteEvent(event.eventId!!,groupId.value.toString(),filter.value?.id.toString())
     }
     // fun delete filter
     fun deleteFilter(filter: Filter) {
-        repository.deleteFilter(filter, groupid){result ->
+        repository.deleteFilter(filter, groupId.value.toString()){result ->
             _filterDeletionResult.postValue(result)
         }
     }

@@ -1,28 +1,20 @@
 package com.example.collectivetrek.fragments
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+
 import android.app.AlertDialog
-import android.app.ProgressDialog.show
-import android.content.DialogInterface
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collectivetrek.EventAdapter
 import com.example.collectivetrek.EventAdapterDeleteCallback
@@ -34,6 +26,7 @@ import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.R
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.database.Filter
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -53,13 +46,11 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
     private val binding get() = _binding!!
 
 
-    private val itineraryViewModel: ItineraryViewModel by activityViewModels {
+    private val itineraryViewModel: ItineraryViewModel by viewModels {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
-    val args: ItineraryFragmentArgs by navArgs()
-
-
+    private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -73,19 +64,21 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             itineraryFilterRecycler.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false)
             eventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
-        itineraryViewModel.setGroupId(args.groupId)
 
         return binding.root
     }
 
-//    init {
-//        itineraryViewModel.setGroupId(args.groupId)
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.itineraryFragment = this
-        val groupId = args.groupId
+
+//        Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
+//        groupIdViewModel.sharedGroupId.observe(viewLifecycleOwner){groupId->
+//            itineraryViewModel.setGroupId(groupId)
+//            Log.d("onViewCreated", groupId)
+//            Log.d("onViewCreated", itineraryViewModel.groupId.value.toString())
+//            Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
+//        }
 
         val eventAdapter = EventAdapter(EventItineraryListener { event ->
             itineraryViewModel.setEvent(event)
@@ -93,9 +86,9 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             // get event id somehow
             val eventId = event.eventId!!
 
-            //TODO makes a event editable
+            //makes a event editable
             showEditEventDialog(eventId)
-            Log.d("DictionaryHome word obj","filter")
+
         },this, this)
         binding.eventsRecyclerView.adapter = eventAdapter
 
@@ -127,29 +120,38 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         binding.itineraryFilterRecycler.adapter = filterAdapter
 
 
-        itineraryViewModel.setFilters(groupId = groupId)
+        Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
+        groupIdViewModel.sharedGroupId.observe(viewLifecycleOwner){groupId->
+            itineraryViewModel.setGroupId(groupId)
+            Log.d("onViewCreated", groupId)
+            Log.d("onViewCreated", itineraryViewModel.groupId.value.toString())
+            Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
 
-        // show list of filtered events
-        itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
-            Log.d("Tag", "Number of filters: ${filters.size}")
+            itineraryViewModel.setFilters(itineraryViewModel.groupId.value.toString())
 
-            if (filters.isEmpty()){
-                binding.deleteFilter.visibility = View.GONE
-                // TODO create filter each for each date
-                // TODO 1 when user created the group with dates for the first time, create filters based on the dates
-                val filter = Filter(name = "Add Filter")
-                val placeHolderFilter = mutableListOf<Filter>()
-                placeHolderFilter.add(filter)
+            itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
+                Log.d("Tag", "Number of filters: ${filters.size}")
 
-                placeHolderFilter.let { filterAdapter.submitList(it) }
+                if (filters.isEmpty()){
+                    binding.deleteFilter.visibility = View.GONE
+                    // TODO create filter each for each date
+                    // TODO 1 when user created the group with dates for the first time, create filters based on the dates
+                    val filter = Filter(name = "Add Filter")
+                    val placeHolderFilter = mutableListOf<Filter>()
+                    placeHolderFilter.add(filter)
 
-                binding.itineraryImage.visibility = View.VISIBLE
+                    placeHolderFilter.let { filterAdapter.submitList(it) }
 
-            } else {
-                binding.deleteFilter.visibility = View.VISIBLE
-                filters.let { filterAdapter.submitList(it) }
+                    binding.itineraryImage.visibility = View.VISIBLE
+
+                } else {
+                    binding.deleteFilter.visibility = View.VISIBLE
+                    filters.let { filterAdapter.submitList(it) }
+                }
             }
         }
+
+
 
         itineraryViewModel.filterShownResult.observe(viewLifecycleOwner){ result ->
             if (result){
@@ -218,7 +220,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                 addFilterMenu.show()
             } else {
                 Log.d("addEventButton clicked", itineraryViewModel.filters.value.isNullOrEmpty().toString())
-                val addMenu = showAddMenu(binding.addEventButton, groupId)
+                val addMenu = showAddMenu(binding.addEventButton, itineraryViewModel.groupId.value.toString())
 
                 addMenu.show()
             }
@@ -247,7 +249,7 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
                     itineraryViewModel.filterDeletionResult.observe(viewLifecycleOwner){result->
                         if(result){
                             Log.d("filter deletion result", result.toString())
-                            itineraryViewModel.setFilters(groupId)
+                            itineraryViewModel.setFilters(itineraryViewModel.groupId.value.toString())
                             itineraryViewModel.filters.observe(viewLifecycleOwner) { filters ->
                                 if (filters.isEmpty()){
                                     val filter = Filter(name = "Add Filter")

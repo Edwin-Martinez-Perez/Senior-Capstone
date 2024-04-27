@@ -86,20 +86,22 @@ class ItineraryRepository {
             }
         })
 
+
+
         return eventsLiveData
     }
 
 
     fun getFilters(groupId: String, callback: (Boolean) -> Unit): LiveData<List<Filter>> {
-//        Log.d("getFilters",tempGroupId)
-        Log.d("getFilters",groupId)
         val filtersLiveData = MutableLiveData<List<Filter>>()
-        //val filterReference = filterRef.child(tempGroupId)
+
         val filterReference = filterRef.child(groupId)
         Log.d("filter ref",filterReference.toString())
 
         filterReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                Log.d("filter reference", filterReference.child(groupId).toString())
 
                 val filtersList = mutableListOf<Filter>()
 
@@ -133,6 +135,9 @@ class ItineraryRepository {
             }
 
         })
+
+
+
         Log.d("getFilters", "before return")
 
         return filtersLiveData
