@@ -12,7 +12,6 @@ import androidx.fragment.app.findFragment
 import androidx.navigation.fragment.findNavController
 import com.example.collectivetrek.R
 import com.example.collectivetrek.databinding.ActivityMainBinding
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp

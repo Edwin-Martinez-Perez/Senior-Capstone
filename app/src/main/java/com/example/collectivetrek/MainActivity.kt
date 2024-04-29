@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.welcomeFragment -> hideBottomNav()
                 R.id.loginFragment -> hideBottomNav()
                 R.id.resetPasswordFragment -> hideBottomNav()
-                R.id.group -> hideBottomNav()
+                R.id.registerFragment -> hideBottomNav()
                 else -> showBottomNav ()
             }
         }
@@ -43,10 +43,6 @@ class MainActivity : AppCompatActivity() {
                     updateBottomNavigationVisibility()
                 }
                 R.id.gallery_item -> {
-                    replaceFragment(GalleryFragment())
-                    updateBottomNavigationVisibility()
-                }
-                R.id.map_item -> {
                     replaceFragment(GalleryFragment())
                     updateBottomNavigationVisibility()
                 }

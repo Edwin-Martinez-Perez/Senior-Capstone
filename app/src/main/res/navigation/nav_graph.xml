@@ -68,18 +68,15 @@
         <action
             android:id="@+id/action_group_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
-<!--        <action-->
-<!--            android:id="@+id/action_group_self"-->
-<!--            app:destination="@id/group" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_group_to_profileFragment"-->
-<!--            app:destination="@id/profileFragment" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_group_to_photoUploadFragment"-->
-<!--            app:destination="@id/photoUploadFragment" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_group_to_mapFragment"-->
-<!--            app:destination="@id/mapFragment" />-->
+        <action
+            android:id="@+id/action_group_self"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_group_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_group_to_mapFragment"
+            app:destination="@id/mapFragment" />
         <argument
             android:name="userId"
             app:argType="string"
@@ -125,20 +122,17 @@
             android:id="@+id/action_itineraryFragment_to_group"
             app:destination="@id/group" />
         <action
-            android:id="@+id/action_itineraryFragment_to_group2"
-            app:destination="@id/group" />
-        <!--        <action-->
-<!--            android:id="@+id/action_itineraryFragment_to_profileFragment"-->
-<!--            app:destination="@id/profileFragment" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_itineraryFragment_to_photoUploadFragment"-->
-<!--            app:destination="@id/photoUploadFragment" />-->
-<!--        <action-->
-<!--            android:id="@+id/action_itineraryFragment_to_mapFragment"-->
-<!--            app:destination="@id/mapFragment" />-->
-<!--        <argument-->
-<!--            android:name="groupId"-->
-<!--            app:argType="string" />-->
+            android:id="@+id/action_itineraryFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_photoUploadFragment"
+            app:destination="@id/photoUploadFragment" />
+        <action
+            android:id="@+id/action_itineraryFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <argument
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/addFilterFragment"
@@ -156,10 +150,10 @@
         <action
             android:id="@+id/action_addEventFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
-<!--        <argument-->
-<!--            android:name="groupId"-->
-<!--            app:argType="string"-->
-<!--            app:nullable="true" />-->
+        <argument
+            android:name="groupId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -202,6 +196,9 @@
         <action
             android:id="@+id/action_profileFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_group2"
+            app:destination="@id/group" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
