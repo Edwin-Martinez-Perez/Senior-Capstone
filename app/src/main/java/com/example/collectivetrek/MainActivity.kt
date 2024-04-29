@@ -20,10 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navController = findNavController(R.id.nav_host_fragment)
-        findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        //creates fragment manager
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id) {
                 R.id.welcomeFragment ->hideBottomNav()
@@ -33,22 +30,18 @@ class MainActivity : AppCompatActivity() {
                 else -> showBottomNav ()
             }
         }
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
+        binding.bottomNavigation.setOnItemSelectedListener  { item ->
             when (item.itemId) {
                 R.id.profile_item -> {
-                    replaceFragment(ProfileFragment())
-                    //updateBottomNavigationVisibility()
+                    navController.navigate(R.id.profileFragment)
                 }
                 R.id.gallery_item -> {
-                    replaceFragment(GalleryFragment())
-                    //updateBottomNavigationVisibility()
+                    navController.navigate(R.id.galleryFragment2)
                 }
                 R.id.itinerary_item -> {
-                    replaceFragment(ItineraryFragment())
-                    //updateBottomNavigationVisibility()
+                    navController.navigate(R.id.itineraryFragment)
                 }
-                else -> {
-                }
+                else -> false
             }
             true
         }
@@ -59,24 +52,16 @@ class MainActivity : AppCompatActivity() {
     private fun showBottomNav() {
         binding.bottomNavigation.visibility = View.VISIBLE
     }
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager //creates fragment manager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.nav_host_fragment, fragment)
-        transaction.commit()
-    }
+
     /*
-    private fun getActiveFragment(): Fragment {
-        val fragmentManager = supportFragmentManager
-        val fragments = fragmentManager.fragments
-        for (fragment in fragments) {
-            if (fragment != null && fragment.isVisible) {
-                val oldFragment = fragment
-                return fragment
-            }
-        }
-        return null
+    private fun replaceFragment(newFragment: Fragment) {
+        //Replace with new fragment
+        val fragmentManager1 = supportFragmentManager //creates fragment manager
+        val secondTransaction = fragmentManager1.beginTransaction()
+        secondTransaction.replace(R.id.nav_host_fragment, newFragment)
+        secondTransaction.commit()
     }
+
 
 
 
