@@ -50,7 +50,7 @@ class PhotoUploadFragment : Fragment() {
 
         val ids: Array<Int> = arrayOf(
             R.drawable.p,
-            R.drawable.theresa
+            R.drawable.profile
 
         )
 
