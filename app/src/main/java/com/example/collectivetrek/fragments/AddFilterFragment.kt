@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Filter
 import com.example.collectivetrek.databinding.FragmentAddFilterBinding
 
@@ -24,6 +26,7 @@ class AddFilterFragment : Fragment() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
+    private val groupIdViewModel: SharedViewModel by viewModels({requireActivity()})
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -42,6 +45,7 @@ class AddFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navController = NavHostFragment.findNavController(this@AddFilterFragment)
+        itineraryViewModel.setGroupId(groupIdViewModel.sharedGroupId.value.toString())
 
 
         binding.addFilterAddButton.setOnClickListener {

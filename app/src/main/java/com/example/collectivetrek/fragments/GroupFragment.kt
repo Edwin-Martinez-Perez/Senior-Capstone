@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,7 @@ class GroupFragment : Fragment() {
     private lateinit var userRecyclerview : RecyclerView
     private lateinit var userArrayList : ArrayList<Group>
 
+
     private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
 
 
@@ -44,6 +46,7 @@ class GroupFragment : Fragment() {
 
         view.findViewById<View>(R.id.add_event_button)?.setOnClickListener{
             findNavController().navigate(R.id.action_group_to_createGroup)
+
         }
 
         userRecyclerview = view.findViewById(R.id.events_recycler_view)
@@ -80,9 +83,12 @@ class GroupFragment : Fragment() {
                         groupIdViewModel.setGroupId(group.groupID!!)
                         groupIdViewModel.groupIdSetResult.observe(viewLifecycleOwner){result->
                             if (result){
+                                findNavController().popBackStack(R.id.group, false)
                                 findNavController().navigate(R.id.action_group_to_itineraryFragment)
                             }
+
                         }
+
                         Log.d("group", "group id${groupIdViewModel.sharedGroupId.value.toString()} , groupName ${group.groupName}") }, userArrayList)
 
                 }
@@ -97,7 +103,14 @@ class GroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
     }
+
+
+
+
+
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
