@@ -31,6 +31,7 @@ class ProfileFragment : Fragment() {
     private lateinit var saveButton: Button
     private lateinit var deleteButton: Button
     private lateinit var logoutButton: Button
+    private lateinit var groupButton: Button
 
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
@@ -55,6 +56,7 @@ class ProfileFragment : Fragment() {
         saveButton = view.findViewById(R.id.buttonSave)
         deleteButton = view.findViewById(R.id.buttonDelete)
         logoutButton = view.findViewById(R.id.buttonLogOut)
+        groupButton = view.findViewById(R.id.buttonGroups)
 
         // Set email information
         emailEditText.setText(currentUser.email)
@@ -86,6 +88,8 @@ class ProfileFragment : Fragment() {
 
         // Set click listener for logout button
         logoutButton.setOnClickListener { logoutUser() }
+
+        groupButton.setOnClickListener { findNavController().navigate(R.id.action_profileFragment_to_group) }
 
         return view
     }
