@@ -6,10 +6,6 @@
         android:id="@+id/itinerary_item"
         android:icon="@drawable/itinerary_icon_foreground"
         android:title="@string/itinerary"/>
-    <item
-        android:id="@+id/map_item"
-        android:icon="@drawable/budget_icon_foreground"
-        android:title="@string/map"/>
 
     <item
         android:id="@+id/gallery_item"
