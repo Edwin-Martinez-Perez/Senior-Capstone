@@ -44,11 +44,25 @@
         android:id="@+id/imageViewProfilePicture"
         android:layout_width="match_parent"
         android:layout_height="300dp"
+        android:layout_marginTop="-50dp"
         android:clickable="true"
         android:src="@drawable/profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonGroups"
+        android:layout_width="300dp"
+        android:text="Groups"
+        android:textSize="25sp"
+        android:backgroundTint="#1F4C67"
+        android:fontFamily="@font/allerta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/editTextEmail"/>
 
     <Button
         android:id="@+id/buttonSave"
@@ -61,7 +75,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmail"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonGroups"/>
 
     <Button
         android:id="@+id/buttonDelete"

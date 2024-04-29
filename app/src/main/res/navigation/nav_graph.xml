@@ -199,6 +199,9 @@
         <action
             android:id="@+id/action_profileFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_group2"
+            app:destination="@id/group" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
