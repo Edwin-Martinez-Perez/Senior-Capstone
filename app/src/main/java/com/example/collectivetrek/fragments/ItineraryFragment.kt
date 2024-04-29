@@ -72,14 +72,6 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
         super.onViewCreated(view, savedInstanceState)
         binding?.itineraryFragment = this
 
-//        Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
-//        groupIdViewModel.sharedGroupId.observe(viewLifecycleOwner){groupId->
-//            itineraryViewModel.setGroupId(groupId)
-//            Log.d("onViewCreated", groupId)
-//            Log.d("onViewCreated", itineraryViewModel.groupId.value.toString())
-//            Log.d("onViewCreated", groupIdViewModel.sharedGroupId.value.toString())
-//        }
-
         val eventAdapter = EventAdapter(EventItineraryListener { event ->
             itineraryViewModel.setEvent(event)
 
@@ -430,8 +422,8 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             when (menuItem.itemId) {
                 R.id.add_event -> {
                     // Handle Popup Item 1 click
-                    val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = groupId)
-                    findNavController().navigate(action)
+                    //val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = groupId)
+                    findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
 
                     true
                 }

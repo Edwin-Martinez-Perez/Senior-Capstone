@@ -114,6 +114,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun insertEvent(event: Event) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("insertEvent in viewmodel",filter.value?.id.toString())
+        Log.d("insertEvent in viewmodel",groupId.value.toString())
         repository.insertEvent(filter.value?.id.toString(),event, groupId.value.toString()){ result ->
             _dataInsertionResult.postValue(result)
         }
@@ -129,6 +130,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun insertFilter(filter: Filter)= viewModelScope.launch(Dispatchers.IO)  {
         Log.d("insertFilter in viewmodel",filter.name.toString())
+        Log.d("insertFilter in viewmodel",groupId.value.toString())
         repository.insertFilter(filter,groupId.value.toString()){result ->
             _filterInsertionResult.postValue(result)
 

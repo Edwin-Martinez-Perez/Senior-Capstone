@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
+
 class GroupFragment : Fragment() {
 
     private lateinit var dbref : DatabaseReference
@@ -31,7 +33,6 @@ class GroupFragment : Fragment() {
     private lateinit var userArrayList : ArrayList<Group>
 
     private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,9 +42,13 @@ class GroupFragment : Fragment() {
         // Inflate the layout
         val view = inflater.inflate(R.layout.group, container, false)
 
+        val navController = NavHostFragment.findNavController(this@GroupFragment)
+        Log.d("group fragment1",navController.currentDestination.toString())
+        Log.d("group fragment2",findNavController().currentDestination.toString())
 
         view.findViewById<View>(R.id.add_event_button)?.setOnClickListener{
-            findNavController().navigate(R.id.action_group_to_createGroup)
+            //findNavController().navigate(R.id.action_group_to_createGroup)
+            navController.navigate(R.id.action_group_to_createGroup)
         }
 
         userRecyclerview = view.findViewById(R.id.events_recycler_view)
@@ -80,7 +85,9 @@ class GroupFragment : Fragment() {
                         groupIdViewModel.setGroupId(group.groupID!!)
                         groupIdViewModel.groupIdSetResult.observe(viewLifecycleOwner){result->
                             if (result){
+                                Log.d("group fragment", result.toString())
                                 findNavController().navigate(R.id.action_group_to_itineraryFragment)
+                                //navController.navigate(R.id.action_group_to_itineraryFragment)
                             }
                         }
                         Log.d("group", "group id${groupIdViewModel.sharedGroupId.value.toString()} , groupName ${group.groupName}") }, userArrayList)
@@ -97,6 +104,7 @@ class GroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
     companion object {
         @JvmStatic

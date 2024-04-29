@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.welcomeFragment -> hideBottomNav()
                 R.id.loginFragment -> hideBottomNav()
                 R.id.resetPasswordFragment -> hideBottomNav()
+                R.id.group -> hideBottomNav()
                 else -> showBottomNav ()
             }
         }

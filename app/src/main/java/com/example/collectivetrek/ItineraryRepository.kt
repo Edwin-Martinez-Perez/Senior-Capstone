@@ -101,7 +101,7 @@ class ItineraryRepository {
         filterReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                Log.d("filter reference", filterReference.child(groupId).toString())
+                Log.d("filter reference", filterReference.toString())
 
                 val filtersList = mutableListOf<Filter>()
 
@@ -124,7 +124,8 @@ class ItineraryRepository {
                 Log.d("getFilters livedata", filtersLiveData.value.toString())
                 if (filtersList.isNotEmpty()){
                     callback(true)
-                } else{
+                }
+                else{
                     callback(false)
                 }
             }
@@ -172,11 +173,11 @@ class ItineraryRepository {
         val filterId = filterRef.push().key!!
         filter.id = filterId
 
-        // TODO groupid should be shared across the pages within one group
         //filterRef.child(tempGroupId).child(filterId).setValue(filter)
         filterRef.child(groupId).child(filterId).setValue(filter)
             .addOnCompleteListener{task ->
                 if (task.isSuccessful) {
+                    Log.d("insert event",filterRef.child(groupId).toString())
                     Log.d("Sucsess Repository insert event",filter.name!!)
                     callback(true) // Callback indicating success
                 } else {

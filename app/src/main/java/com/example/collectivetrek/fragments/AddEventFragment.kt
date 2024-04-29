@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.NavHostFragment
@@ -25,6 +26,7 @@ import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.R
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.databinding.FragmentAddEventBinding
 import com.google.android.gms.maps.model.LatLng
@@ -49,6 +51,9 @@ class AddEventFragment : Fragment() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
+    private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
+
+
     private lateinit var placesClient: PlacesClient
 
     private val _bitmapSetResult = MutableLiveData<Boolean>()
@@ -57,7 +62,7 @@ class AddEventFragment : Fragment() {
     private val _coordinatesSetResult = MutableLiveData<Boolean>()
     val coordinatesSetResult: LiveData<Boolean> get() = _coordinatesSetResult
 
-    val args: AddEventFragmentArgs by navArgs()
+    //val args: AddEventFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,12 +99,13 @@ class AddEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        itineraryViewModel.setGroupId(groupIdViewModel.sharedGroupId.value.toString())
         placesClient = Places.createClient(requireContext())
 
         Log.d("insertion result check0", itineraryViewModel.dataInsertionResult.value.toString())
 
-        val groupId = args.groupId
-        Log.d("groupId received",groupId.toString())
+        //val groupId = args.groupId
+        //Log.d("groupId received",groupId.toString())
 
         val navController = NavHostFragment.findNavController(this@AddEventFragment)
         Log.d("on view created","on view created")

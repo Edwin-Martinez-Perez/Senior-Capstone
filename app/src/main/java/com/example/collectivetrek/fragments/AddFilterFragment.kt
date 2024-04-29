@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Filter
 import com.example.collectivetrek.databinding.FragmentAddFilterBinding
 
@@ -23,6 +25,8 @@ class AddFilterFragment : Fragment() {
     private val itineraryViewModel: ItineraryViewModel by activityViewModels() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
+
+    private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +46,40 @@ class AddFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navController = NavHostFragment.findNavController(this@AddFilterFragment)
+        Log.d("AddFilterFragment",itineraryViewModel.groupId.value.toString())
+        Log.d("AddFilterFragment",groupIdViewModel.sharedGroupId.value.toString())
+        itineraryViewModel.setGroupId(groupIdViewModel.sharedGroupId.value.toString())
 
+
+//        binding.addFilterAddButton.setOnClickListener {
+//            Log.d("add filter button",itineraryViewModel.groupId.value.toString())
+//            // retrieve filter from edit text and validate
+//            var filterName = binding.addFilterFilterEditText.editText?.text.toString()
+//            Log.d("add filter fragment",filterName)
+//            if (checkFilterName(filterName)) {
+//                // store in database
+//                filterName = filterName.replaceFirstChar { c->
+//                    c.titlecase()
+//                }
+//                val filter = Filter(name=filterName)
+//                addFilterToDatabase(filter)
+//                itineraryViewModel.filterInsertionResult.observe(viewLifecycleOwner){ result ->
+//                    if (result){
+//                        // make Toast
+//                        Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
+//                        Log.d("add filter fragment", filter.id.toString())
+//                        itineraryViewModel.setFilter(filter)
+//                        Log.d("add filter fragment", itineraryViewModel.filter.value.toString())
+//                        // go back to itinerary page
+//                        navController.popBackStack()
+//                    }
+//                }
+//            }
+//        }
 
         binding.addFilterAddButton.setOnClickListener {
+            Log.d("add filter button",itineraryViewModel.groupId.value.toString())
+            //Log.d("add filter button",groupId)
             // retrieve filter from edit text and validate
             var filterName = binding.addFilterFilterEditText.editText?.text.toString()
             Log.d("add filter fragment",filterName)
@@ -66,12 +101,8 @@ class AddFilterFragment : Fragment() {
                         navController.popBackStack()
                     }
                 }
-//                // make Toast
-//                Toast.makeText(context, "New filter added", Toast.LENGTH_LONG).show()
-//                // go back to itinerary page
-//
-//                navController.popBackStack()
             }
+
         }
 
         binding.addFilterCancelButton.setOnClickListener {
