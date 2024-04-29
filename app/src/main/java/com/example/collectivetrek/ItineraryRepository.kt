@@ -101,7 +101,7 @@ class ItineraryRepository {
         filterReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                Log.d("filter reference", filterReference.child(groupId).toString())
+                Log.d("filter reference", filterReference.toString())
 
                 val filtersList = mutableListOf<Filter>()
 
@@ -124,7 +124,8 @@ class ItineraryRepository {
                 Log.d("getFilters livedata", filtersLiveData.value.toString())
                 if (filtersList.isNotEmpty()){
                     callback(true)
-                } else{
+                }
+                else{
                     callback(false)
                 }
             }
@@ -147,13 +148,20 @@ class ItineraryRepository {
 
     fun insertEvent(filterId: String, event: Event, groupId: String, callback: (Boolean) -> Unit) {
         Log.d("InsertEvent in Repo",filterId)
+        Log.d("InsertEvent in Repo",groupId)
         //insert to firebase
         //insert
         val eventId = eventRef.push().key!! //unique event id
+        Log.d("InsertEvent in Repo",eventRef.child(eventId).toString())
         eventRef.child(eventId).setValue(event)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful) {
-                    callback(true) // Callback indicating success
+                    filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
+                        .addOnCompleteListener{task ->
+                            if (task.isSuccessful){
+                                callback(true) // Callback indicating success
+                            }
+                        }
                 } else {
                     callback(false) // Callback indicating failure
                 }
@@ -162,9 +170,9 @@ class ItineraryRepository {
                 Log.d("Repository insert event",err.toString())
             }
 
-        //TODO filter id is the selected filter
+        //filter id is the selected filter
         //filterRef.child(tempGroupId).child(filterId).child("events").child(eventId).setValue(true)
-        filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
+        //filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
     }
 
     fun insertFilter(filter: Filter, groupId: String, callback: (Boolean) -> Unit) {
@@ -172,11 +180,11 @@ class ItineraryRepository {
         val filterId = filterRef.push().key!!
         filter.id = filterId
 
-        // TODO groupid should be shared across the pages within one group
         //filterRef.child(tempGroupId).child(filterId).setValue(filter)
         filterRef.child(groupId).child(filterId).setValue(filter)
             .addOnCompleteListener{task ->
                 if (task.isSuccessful) {
+                    Log.d("insert event",filterRef.child(groupId).toString())
                     Log.d("Sucsess Repository insert event",filter.name!!)
                     callback(true) // Callback indicating success
                 } else {

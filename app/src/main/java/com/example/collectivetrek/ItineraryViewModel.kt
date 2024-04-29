@@ -112,9 +112,11 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
     }
 
 
-    fun insertEvent(event: Event) = viewModelScope.launch(Dispatchers.IO) {
+    fun insertEvent(event: Event, filterId: String) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("insertEvent in viewmodel",filter.value?.id.toString())
-        repository.insertEvent(filter.value?.id.toString(),event, groupId.value.toString()){ result ->
+        Log.d("insertEvent in viewmodel",filterId)
+        Log.d("insertEvent in viewmodel",groupId.value.toString())
+        repository.insertEvent(filterId,event, groupId.value.toString()){ result ->
             _dataInsertionResult.postValue(result)
         }
         Log.d("after insertEvent in viewmodel",dataInsertionResult.value.toString())
@@ -129,6 +131,7 @@ class ItineraryViewModel(private val repository: ItineraryRepository): ViewModel
 
     fun insertFilter(filter: Filter)= viewModelScope.launch(Dispatchers.IO)  {
         Log.d("insertFilter in viewmodel",filter.name.toString())
+        Log.d("insertFilter in viewmodel",groupId.value.toString())
         repository.insertFilter(filter,groupId.value.toString()){result ->
             _filterInsertionResult.postValue(result)
 
