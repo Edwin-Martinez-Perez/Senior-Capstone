@@ -61,7 +61,7 @@ class AddEventFragment : Fragment() {
     private val _coordinatesSetResult = MutableLiveData<Boolean>()
     val coordinatesSetResult: LiveData<Boolean> get() = _coordinatesSetResult
 
-    //val args: AddEventFragmentArgs by navArgs()
+    val args: AddEventFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -100,6 +100,8 @@ class AddEventFragment : Fragment() {
 
         itineraryViewModel.setGroupId(groupIdViewModel.sharedGroupId.value.toString())
         placesClient = Places.createClient(requireContext())
+
+        val filterId = args.filterId
 
         Log.d("insertion result check0", itineraryViewModel.dataInsertionResult.value.toString())
 
@@ -152,7 +154,7 @@ class AddEventFragment : Fragment() {
                     Log.d("coordinatessetresult",result.toString())
                     if (!result) {
                         //coordinates are not set = no address
-                        addEventToDataBase(event)
+                        addEventToDataBase(event, filterId)
                     } else {
                         Log.d("bitmapsetresult observe0", result.toString())
                         bitmapSetResult.observe(viewLifecycleOwner){ result ->
@@ -160,7 +162,7 @@ class AddEventFragment : Fragment() {
                             if (result){
                                 Log.d("bitmapsetresult observe2", result.toString())
                                 // store in database
-                                addEventToDataBase(event)
+                                addEventToDataBase(event, filterId)
                             } else {
                                 Log.d("bitmapsetresult false", event.toString())
                             }
@@ -250,9 +252,10 @@ class AddEventFragment : Fragment() {
         return true
     }
 
-    private fun addEventToDataBase(event:Event) {
+    private fun addEventToDataBase(event:Event, filterId: String) {
         Log.d("Add event to database filterId", itineraryViewModel.filter.value?.id.toString())
-        itineraryViewModel.insertEvent(event)
+        // TODO set filter
+        itineraryViewModel.insertEvent(event, filterId)
 
     }
 

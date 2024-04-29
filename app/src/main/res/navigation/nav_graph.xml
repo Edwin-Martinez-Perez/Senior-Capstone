@@ -151,9 +151,8 @@
             android:id="@+id/action_addEventFragment_to_itineraryFragment"
             app:destination="@id/itineraryFragment" />
         <argument
-            android:name="groupId"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="filterId"
+            app:argType="string" />
     </fragment>
 
     <fragment

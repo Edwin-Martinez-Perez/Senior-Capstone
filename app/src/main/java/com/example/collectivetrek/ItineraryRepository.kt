@@ -148,13 +148,20 @@ class ItineraryRepository {
 
     fun insertEvent(filterId: String, event: Event, groupId: String, callback: (Boolean) -> Unit) {
         Log.d("InsertEvent in Repo",filterId)
+        Log.d("InsertEvent in Repo",groupId)
         //insert to firebase
         //insert
         val eventId = eventRef.push().key!! //unique event id
+        Log.d("InsertEvent in Repo",eventRef.child(eventId).toString())
         eventRef.child(eventId).setValue(event)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful) {
-                    callback(true) // Callback indicating success
+                    filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
+                        .addOnCompleteListener{task ->
+                            if (task.isSuccessful){
+                                callback(true) // Callback indicating success
+                            }
+                        }
                 } else {
                     callback(false) // Callback indicating failure
                 }
@@ -163,9 +170,9 @@ class ItineraryRepository {
                 Log.d("Repository insert event",err.toString())
             }
 
-        //TODO filter id is the selected filter
+        //filter id is the selected filter
         //filterRef.child(tempGroupId).child(filterId).child("events").child(eventId).setValue(true)
-        filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
+        //filterRef.child(groupId).child(filterId).child("events").child(eventId).setValue(true)
     }
 
     fun insertFilter(filter: Filter, groupId: String, callback: (Boolean) -> Unit) {

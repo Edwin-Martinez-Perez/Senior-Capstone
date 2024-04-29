@@ -422,8 +422,9 @@ class ItineraryFragment : Fragment(), EventAdapterCallback, EventAdapterDeleteCa
             when (menuItem.itemId) {
                 R.id.add_event -> {
                     // Handle Popup Item 1 click
-                    //val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(groupId = groupId)
-                    findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
+                    val action = ItineraryFragmentDirections.actionItineraryFragmentToAddEventFragment(filterId = itineraryViewModel.filter.value?.id.toString())
+                    //findNavController().navigate(R.id.action_itineraryFragment_to_addEventFragment)
+                    findNavController().navigate(action)
 
                     true
                 }
