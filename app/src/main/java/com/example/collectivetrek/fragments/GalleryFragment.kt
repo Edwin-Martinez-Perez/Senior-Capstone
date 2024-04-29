@@ -1,6 +1,7 @@
 package com.example.collectivetrek.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,8 @@ class GalleryFragment : Fragment() {
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+
+
         }
     }
 
@@ -43,7 +46,8 @@ class GalleryFragment : Fragment() {
 
 
         view.findViewById<Button>(R.id.galleryButton1)?.setOnClickListener{
-            findNavController().navigate(R.id.action_galleryFragment_to_photoUploadFragment)
+            Log.d("Destination: ", findNavController().currentDestination.toString())
+             findNavController().navigate(R.id.action_galleryFragment_to_photoUploadFragment)
         }
         return view
     }

@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.location.Geocoder
 import android.os.Bundle
+import com.example.collectivetrek.BuildConfig
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,18 +17,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
-import com.example.collectivetrek.BuildConfig
 import com.example.collectivetrek.ItineraryRepository
 import com.example.collectivetrek.ItineraryViewModel
 import com.example.collectivetrek.ItineraryViewModelFactory
 import com.example.collectivetrek.R
+import com.example.collectivetrek.SharedViewModel
 import com.example.collectivetrek.database.Event
 import com.example.collectivetrek.databinding.FragmentAddEventBinding
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.PhotoMetadata
 import com.google.android.libraries.places.api.model.Place
@@ -49,6 +50,9 @@ class AddEventFragment : Fragment() {
         ItineraryViewModelFactory(repository = ItineraryRepository())
     }
 
+    private val groupIdViewModel: SharedViewModel by viewModels({ requireActivity() })
+
+
     private lateinit var placesClient: PlacesClient
 
     private val _bitmapSetResult = MutableLiveData<Boolean>()
@@ -57,7 +61,7 @@ class AddEventFragment : Fragment() {
     private val _coordinatesSetResult = MutableLiveData<Boolean>()
     val coordinatesSetResult: LiveData<Boolean> get() = _coordinatesSetResult
 
-    val args: AddEventFragmentArgs by navArgs()
+    //val args: AddEventFragmentArgs by navArgs()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,12 +98,13 @@ class AddEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        itineraryViewModel.setGroupId(groupIdViewModel.sharedGroupId.value.toString())
         placesClient = Places.createClient(requireContext())
 
         Log.d("insertion result check0", itineraryViewModel.dataInsertionResult.value.toString())
 
-        val groupId = args.groupId
-        Log.d("groupId received",groupId.toString())
+        //val groupId = args.groupId
+        //Log.d("groupId received",groupId.toString())
 
         val navController = NavHostFragment.findNavController(this@AddEventFragment)
         Log.d("on view created","on view created")
@@ -227,7 +232,7 @@ class AddEventFragment : Fragment() {
                 event.coordinates = coordinates //save to data object
                 _coordinatesSetResult.postValue(true)
                 setBitmap(event) { result ->
-                    _bitmapSetResult.postValue(result)
+                    _bitmapSetResult.postValue(result!!)
                     Log.d("bitmapsetResult",bitmapSetResult.toString())
                 }
             } else {
